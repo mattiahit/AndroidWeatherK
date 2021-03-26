@@ -13,7 +13,7 @@ class WeatherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule())
+            .appModule(AppModule(this))
             .apiModule(ApiModule())
             .viewModelModule(ViewModelModule())
             .build()
