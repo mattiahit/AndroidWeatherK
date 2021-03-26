@@ -1,10 +1,11 @@
 package pl.mattiahit.androidweatherk
 
 import android.app.Application
-import pl.mattiahit.androidweatherk.components.AppComponent
-import pl.mattiahit.androidweatherk.components.DaggerAppComponent
-import pl.mattiahit.androidweatherk.modules.ApiModule
-import pl.mattiahit.androidweatherk.modules.AppModule
+import pl.mattiahit.androidweatherk.di.components.AppComponent
+import pl.mattiahit.androidweatherk.di.components.DaggerAppComponent
+import pl.mattiahit.androidweatherk.di.modules.ApiModule
+import pl.mattiahit.androidweatherk.di.modules.AppModule
+import pl.mattiahit.androidweatherk.di.modules.ViewModelModule
 
 class WeatherApplication : Application() {
     private lateinit var appComponent: AppComponent
@@ -14,10 +15,11 @@ class WeatherApplication : Application() {
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule())
             .apiModule(ApiModule())
+            .viewModelModule(ViewModelModule())
             .build()
     }
 
-    fun getAppComponent(): AppComponent{
+    fun getAppComponent(): AppComponent {
         return this.appComponent
     }
 }

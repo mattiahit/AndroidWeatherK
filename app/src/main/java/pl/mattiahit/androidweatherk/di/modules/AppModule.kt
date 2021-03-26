@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.modules
+package pl.mattiahit.androidweatherk.di.modules
 
 import dagger.Module
 import dagger.Provides
