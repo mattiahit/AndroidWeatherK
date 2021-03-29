@@ -13,7 +13,7 @@ interface LocationDao {
     fun getAllLocations(): List<Location>
 
     @Query("SELECT EXISTS(SELECT 1 FROM Location WHERE location_name LIKE :name)")
-    fun isLocationExists(name: String)
+    fun isLocationExists(name: String):Boolean
 
     @Insert
     fun insertLocation(location: Location)

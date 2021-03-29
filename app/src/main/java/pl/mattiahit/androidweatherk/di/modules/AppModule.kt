@@ -1,6 +1,8 @@
 package pl.mattiahit.androidweatherk.di.modules
 
 import android.app.Application
+import android.content.Context
+import android.location.LocationManager
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -15,7 +17,7 @@ class AppModule(private val application: Application) {
 
     @Singleton
     @Provides
-    fun providesRetrofitInstance():Retrofit{
+    fun provideRetrofitInstance():Retrofit{
         return Retrofit.Builder()
             .baseUrl(BaseRestTask.SERVER_ADDRESS)
             .addConverterFactory(GsonConverterFactory.create())
@@ -24,7 +26,13 @@ class AppModule(private val application: Application) {
 
     @Singleton
     @Provides
-    fun providesRoomInstance():AppDatabase{
+    fun provideRoomInstance():AppDatabase{
         return Room.databaseBuilder(this.application, AppDatabase::class.java, "WeatherDatabase").build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocationManagerInstance():LocationManager{
+        return this.application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 }
