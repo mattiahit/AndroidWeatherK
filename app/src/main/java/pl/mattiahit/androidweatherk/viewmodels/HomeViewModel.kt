@@ -3,9 +3,12 @@ package pl.mattiahit.androidweatherk.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.models.Location
+import pl.mattiahit.androidweatherk.repositories.LocationRepository
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository) : ViewModel() {
 
     private lateinit var mLocations: MutableLiveData<List<Location>>
 

@@ -11,13 +11,13 @@ import pl.mattiahit.androidweatherk.rest.BaseRestTask
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import javax.inject.Inject
 
-class LocationRepository(private val application: WeatherApplication) {
+class LocationRepository(application: WeatherApplication) {
 
     @Inject lateinit var appDatabase: AppDatabase
     @Inject lateinit var apiService: APIService
 
     init {
-        (application as WeatherApplication).getAppComponent().inject(this)
+        application.getAppComponent().inject(this)
     }
 
     fun getLocations():List<Location>{

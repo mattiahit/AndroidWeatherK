@@ -16,7 +16,6 @@ class WeatherApplication : Application() {
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .apiModule(ApiModule())
-            .viewModelModule(ViewModelModule())
             .repositoryModule(RepositoryModule(this))
             .build()
     }
