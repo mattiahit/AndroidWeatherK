@@ -1,5 +1,6 @@
 package pl.mattiahit.androidweatherk.models.daos
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -10,7 +11,7 @@ import pl.mattiahit.androidweatherk.models.Location
 interface LocationDao {
 
     @Query("SELECT * FROM Location")
-    fun getAllLocations(): List<Location>
+    fun getAllLocations(): LiveData<List<Location>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM Location WHERE location_name LIKE :name)")
     fun isLocationExists(name: String):Boolean

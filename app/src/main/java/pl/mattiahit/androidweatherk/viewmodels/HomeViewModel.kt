@@ -10,7 +10,11 @@ import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository) : ViewModel() {
 
-    private lateinit var mLocations: MutableLiveData<List<Location>>
+    private var mLocations: MutableLiveData<List<Location>> = MutableLiveData<List<Location>>()
+
+    init {
+        this.mLocations.value = locationRepository.getLocations()
+    }
 
     fun getLocations(): LiveData<List<Location>> {
         return this.mLocations

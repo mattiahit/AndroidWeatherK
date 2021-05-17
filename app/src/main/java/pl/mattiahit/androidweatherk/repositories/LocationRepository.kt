@@ -1,5 +1,6 @@
 package pl.mattiahit.androidweatherk.repositories
 
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -20,8 +21,8 @@ class LocationRepository(application: WeatherApplication) {
         application.getAppComponent().inject(this)
     }
 
-    fun getLocations():List<Location>{
-        return this.appDatabase.locationDao().getAllLocations()
+    fun getLocations(): List<Location>? {
+        return this.appDatabase.locationDao().getAllLocations().value
     }
 
     fun getWeatherForLocation(lat: Double, lon: Double) : Single<WeatherResponse>{

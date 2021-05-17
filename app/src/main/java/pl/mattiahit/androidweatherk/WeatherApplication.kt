@@ -6,7 +6,6 @@ import pl.mattiahit.androidweatherk.di.components.DaggerAppComponent
 import pl.mattiahit.androidweatherk.di.modules.ApiModule
 import pl.mattiahit.androidweatherk.di.modules.AppModule
 import pl.mattiahit.androidweatherk.di.modules.RepositoryModule
-import pl.mattiahit.androidweatherk.di.modules.ViewModelModule
 
 class WeatherApplication : Application() {
     private lateinit var appComponent: AppComponent

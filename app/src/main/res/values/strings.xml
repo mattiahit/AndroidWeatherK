@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AndroidWeatherK</string>
+    <string name="weather_ico_desc">WeatherIco</string>
+    <string name="favourite_ico_desc">FavouriteIco</string>
 </resources>
