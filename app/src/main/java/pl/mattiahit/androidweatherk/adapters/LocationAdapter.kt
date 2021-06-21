@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item_location_weather.view.*
 import pl.mattiahit.androidweatherk.R
-import pl.mattiahit.androidweatherk.models.Location
+import pl.mattiahit.androidweatherk.models.WeatherLocation
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 
-class LocationAdapter(var context: Context, var locations: List<Location>): RecyclerView.Adapter<LocationAdapter.LocationHolder>() {
+class LocationAdapter(var context: Context, var locations: List<WeatherLocation>): RecyclerView.Adapter<LocationAdapter.LocationHolder>() {
 
-    private lateinit var location: Location
+    private lateinit var location: WeatherLocation
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationHolder {
         return LocationHolder(LayoutInflater.from(context)

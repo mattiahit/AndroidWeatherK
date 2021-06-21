@@ -8,6 +8,7 @@ import pl.mattiahit.androidweatherk.di.modules.RepositoryModule
 import pl.mattiahit.androidweatherk.di.modules.ViewModelModule
 import pl.mattiahit.androidweatherk.fragments.HomeFragment
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
+import pl.mattiahit.androidweatherk.repositories.WeatherRepository
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
 import javax.inject.Singleton
 
@@ -17,5 +18,6 @@ interface AppComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(homeFragment: HomeFragment)
     fun inject(locationRepository: LocationRepository)
+    fun inject(weatherRepository: WeatherRepository)
     fun inject(homeViewModel: HomeViewModel)
 }

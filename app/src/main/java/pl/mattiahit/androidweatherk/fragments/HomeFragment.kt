@@ -22,8 +22,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         this.initializeUI()
     }
 
-    fun initializeUI() {
-        this.mHomeViewModel.getLocations().observe(this, Observer {
+    private fun initializeUI() {
+        this.mHomeViewModel.getStoredLocations().observe(this, Observer {
 
         })
     }
