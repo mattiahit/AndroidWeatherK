@@ -9,8 +9,7 @@ import javax.inject.Inject
 class LocationRepository(val application: WeatherApplication) {
 
     @Inject lateinit var appDatabase: AppDatabase
-
-    private lateinit var locationLiveData: LocationLiveData
+    @Inject lateinit var locationLiveData: LocationLiveData
 
     init {
         application.getAppComponent().inject(this)

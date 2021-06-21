@@ -5,6 +5,7 @@ import pl.mattiahit.androidweatherk.di.components.AppComponent
 import pl.mattiahit.androidweatherk.di.components.DaggerAppComponent
 import pl.mattiahit.androidweatherk.di.modules.ApiModule
 import pl.mattiahit.androidweatherk.di.modules.AppModule
+import pl.mattiahit.androidweatherk.di.modules.LiveDataModule
 import pl.mattiahit.androidweatherk.di.modules.RepositoryModule
 
 class WeatherApplication : Application() {
@@ -16,6 +17,7 @@ class WeatherApplication : Application() {
             .appModule(AppModule(this))
             .apiModule(ApiModule())
             .repositoryModule(RepositoryModule(this))
+            .liveDataModule(LiveDataModule(this))
             .build()
     }
 
