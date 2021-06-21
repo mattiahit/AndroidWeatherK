@@ -10,18 +10,19 @@ class LocationRepository(val application: WeatherApplication) {
 
     @Inject lateinit var appDatabase: AppDatabase
 
-    private val locationLiveData: LocationLiveData = LocationLiveData(application)
+    private lateinit var locationLiveData: LocationLiveData
 
     init {
         application.getAppComponent().inject(this)
+        locationLiveData = LocationLiveData(application)
     }
 
     fun getLocationsFromDb(): List<WeatherLocation>? {
         return this.appDatabase.locationDao().getAllLocations().value
     }
 
-    fun getLocationFromGps(): WeatherLocation? {
-        return this.locationLiveData.value
+    fun getLocationFromGps(): LocationLiveData {
+        return this.locationLiveData
     }
 
 }

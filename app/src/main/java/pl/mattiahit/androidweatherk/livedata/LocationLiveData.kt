@@ -1,9 +1,12 @@
 package pl.mattiahit.androidweatherk.livedata
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -21,7 +24,7 @@ class LocationLiveData(private val context: Context) : LiveData<WeatherLocation>
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             locationResult ?: return
-
+            Log.i("GPS", locationResult.toString())
             for (location in locationResult.locations){
                 setLocationData(location)
             }
@@ -44,12 +47,16 @@ class LocationLiveData(private val context: Context) : LiveData<WeatherLocation>
 
     override fun onActive() {
         super.onActive()
-        fusedLocationClient.lastLocation.addOnSuccessListener {
-            location: Location -> location.also {
-                setLocationData(it)
+        Log.i("GPS", "ACTIVE!!!")
+        if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
+                location.also {
+                    setLocationData(it)
+                }
             }
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
         }
-        startLocationUpdates()
     }
 
     override fun onInactive() {
@@ -57,12 +64,8 @@ class LocationLiveData(private val context: Context) : LiveData<WeatherLocation>
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-    private fun startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
-    }
-
     companion object {
-        val ONE_MINUTE: Long = 60000
+        const val ONE_MINUTE: Long = 60000
         val locationRequest : LocationRequest = LocationRequest.create().apply {
             interval = ONE_MINUTE
             fastestInterval = ONE_MINUTE/4

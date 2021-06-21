@@ -27,39 +27,39 @@ class MainActivity : AppCompatActivity(), LocationListener {
     }
 
     override fun onResume() {
-        this.initLocationListener()
+        //this.initLocationListener()
         super.onResume()
     }
 
-    private fun initLocationListener(){
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            this.locationPermissionGranted = false
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION),
-                PERMISSION_REQUEST_LOCATION)
-        }else{
-            Toast.makeText(this, "Location Permission Granted", Toast.LENGTH_SHORT).show()
-            this.locationPermissionGranted = true
-            this.locationManagerInstance.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0f, this)
-        }
-    }
+//    private fun initLocationListener(){
+//        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+//            || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+//            //this.locationPermissionGranted = false
+//            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION),
+//                PERMISSION_REQUEST_LOCATION)
+//        }else{
+//            Toast.makeText(this, "Location Permission Granted", Toast.LENGTH_SHORT).show()
+//           //this.locationPermissionGranted = true
+//            //this.locationManagerInstance.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0f, this)
+//        }
+//    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when(requestCode){
-            PERMISSION_REQUEST_LOCATION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    locationPermissionGranted = true
-                    this.initLocationListener()
-                }else{
-                    locationPermissionGranted = false
-                }
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        when(requestCode){
+//            PERMISSION_REQUEST_LOCATION -> {
+//                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+////                    locationPermissionGranted = true
+////                    //this.initLocationListener()
+////                }else{
+////                    locationPermissionGranted = false
+//                }
+//            }
+//        }
+//    }
 
     override fun onLocationChanged(location: Location) {
         TODO("Not yet implemented")

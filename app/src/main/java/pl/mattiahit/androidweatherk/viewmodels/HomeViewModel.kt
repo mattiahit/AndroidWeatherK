@@ -19,7 +19,7 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
         return this.mLocations
     }
 
-    fun getCurrentLocation(): WeatherLocation? {
+    fun getCurrentLocation(): LiveData<WeatherLocation> {
         return this.locationRepository.getLocationFromGps()
     }
 }
