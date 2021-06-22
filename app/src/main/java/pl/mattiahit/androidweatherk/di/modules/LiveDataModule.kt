@@ -1,5 +1,6 @@
 package pl.mattiahit.androidweatherk.di.modules
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import pl.mattiahit.androidweatherk.WeatherApplication

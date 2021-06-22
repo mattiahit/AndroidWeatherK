@@ -13,7 +13,6 @@ class LocationRepository(val application: WeatherApplication) {
 
     init {
         application.getAppComponent().inject(this)
-        locationLiveData = LocationLiveData(application)
     }
 
     fun getLocationsFromDb(): List<WeatherLocation>? {

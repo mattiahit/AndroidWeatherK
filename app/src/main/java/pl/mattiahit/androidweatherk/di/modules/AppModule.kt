@@ -30,9 +30,4 @@ class AppModule(private val application: Application) {
         return Room.databaseBuilder(this.application, AppDatabase::class.java, "WeatherDatabase").build()
     }
 
-    @Singleton
-    @Provides
-    fun provideLocationManagerInstance():LocationManager{
-        return this.application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    }
 }
