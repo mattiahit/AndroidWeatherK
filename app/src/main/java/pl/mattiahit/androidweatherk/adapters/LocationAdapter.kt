@@ -9,9 +9,10 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item_location_weather.view.*
 import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.models.WeatherLocation
+import pl.mattiahit.androidweatherk.repositories.WeatherRepository
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 
-class LocationAdapter(var context: Context, var locations: List<WeatherLocation>): RecyclerView.Adapter<LocationAdapter.LocationHolder>() {
+class LocationAdapter(var context: Context, var weatherResponses: List<WeatherResponse>): RecyclerView.Adapter<LocationAdapter.LocationHolder>() {
 
     private lateinit var location: WeatherLocation
 
@@ -24,11 +25,11 @@ class LocationAdapter(var context: Context, var locations: List<WeatherLocation>
         holder: LocationHolder,
         position: Int
     ) {
-        // TODO pogoda z lokalizacji
+        holder.bind(weatherResponses[position])
     }
 
     override fun getItemCount(): Int {
-        return locations.size
+        return weatherResponses.size
     }
 
     inner class LocationHolder(itemView: View): RecyclerView.ViewHolder(itemView){

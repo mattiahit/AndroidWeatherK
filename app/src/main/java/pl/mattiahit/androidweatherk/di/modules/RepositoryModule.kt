@@ -19,6 +19,6 @@ class RepositoryModule(private val weatherApplication: WeatherApplication) {
     @Singleton
     @Provides
     fun provideWeatherRepository(): WeatherRepository{
-        return WeatherRepository()
+        return WeatherRepository(weatherApplication)
     }
 }
