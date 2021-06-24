@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 import pl.mattiahit.androidweatherk.MainActivity
@@ -19,6 +20,7 @@ import pl.mattiahit.androidweatherk.adapters.LocationAdapter
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
 import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
+import java.util.ArrayList
 import javax.inject.Inject
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -26,15 +28,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     @Inject lateinit var mHomeViewModelFactory: HomeViewModelFactory
     lateinit var mHomeViewModel: HomeViewModel
     private lateinit var locationAdapter: LocationAdapter
+    private var weatherLocationsList = ArrayList<WeatherResponse>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity?.application as WeatherApplication).getAppComponent().inject(this)
         this.mHomeViewModel = ViewModelProvider(this, this.mHomeViewModelFactory).get(HomeViewModel::class.java)
+        this.locationAdapter = LocationAdapter(requireActivity(), weatherLocationsList)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        locations_list.layoutManager = LinearLayoutManager(activity)
+        locations_list.adapter = this.locationAdapter
         searchLocationBtn.setOnClickListener {
             if (!locationNameEditText.text.isBlank()) {
                 mHomeViewModel.getWeatherForCity(locationNameEditText.text.toString())
@@ -97,8 +103,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun getWeatherObserver(): io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse> {
         return object : io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse>() {
             override fun onSuccess(value: WeatherResponse) {
-                locationAdapter = LocationAdapter(requireActivity(), listOf(value))
-                locations_list.adapter = locationAdapter
+                weatherLocationsList.clear()
+                weatherLocationsList.add(value)
+                locationAdapter.notifyDataSetChanged()
             }
 
             override fun onError(e: Throwable) {
