@@ -2,6 +2,7 @@ package pl.mattiahit.androidweatherk.fragments
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -9,11 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 import pl.mattiahit.androidweatherk.MainActivity
 import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.adapters.LocationAdapter
+import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
 import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
 import javax.inject.Inject
@@ -35,10 +38,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         searchLocationBtn.setOnClickListener {
             if (!locationNameEditText.text.isBlank()) {
                 mHomeViewModel.getWeatherForCity(locationNameEditText.text.toString())
-                    .doOnSuccess { response->
-                        locationAdapter = LocationAdapter(requireActivity(), listOf(response))
-                        locations_list.adapter = locationAdapter
-                    }
+                    .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getWeatherObserver())
             }
         }
         this.initializeLocation()
@@ -66,13 +68,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun loadStoredLocations() {
-        this.mHomeViewModel.getStoredLocations().observe(this, Observer {
+        this.mHomeViewModel.getStoredLocations().observe(requireActivity(), Observer {
             it?.let {
                 for ( weatherLocation in it){
-                    this.mHomeViewModel.getWeatherForLocation(weatherLocation).doOnSuccess { weatherResponse->
-                        locationAdapter = LocationAdapter(requireActivity(), listOf(weatherResponse))
-                        locations_list.adapter = locationAdapter
-                    }
+                    this.mHomeViewModel.getWeatherForLocation(weatherLocation)
+                        .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(getWeatherObserver())
                 }
             }
         })
@@ -88,6 +90,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     this.requestLocationUpdates()
                 }
+            }
+        }
+    }
+
+    private fun getWeatherObserver(): io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse> {
+        return object : io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse>() {
+            override fun onSuccess(value: WeatherResponse) {
+                locationAdapter = LocationAdapter(requireActivity(), listOf(value))
+                locations_list.adapter = locationAdapter
+            }
+
+            override fun onError(e: Throwable) {
+                e.message?.let { Log.e(javaClass.name, it) };
             }
         }
     }

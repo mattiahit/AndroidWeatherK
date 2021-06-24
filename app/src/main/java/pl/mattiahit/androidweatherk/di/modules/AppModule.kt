@@ -4,10 +4,11 @@ import android.app.Application
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
+import okhttp3.OkHttpClient
 import pl.mattiahit.androidweatherk.database.AppDatabase
 import pl.mattiahit.androidweatherk.rest.BaseRestTask
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
@@ -19,8 +20,9 @@ class AppModule(private val application: Application) {
     fun provideRetrofitInstance():Retrofit{
         return Retrofit.Builder()
             .baseUrl(BaseRestTask.SERVER_ADDRESS)
+            .client(OkHttpClient().newBuilder().build())
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
     }
 
