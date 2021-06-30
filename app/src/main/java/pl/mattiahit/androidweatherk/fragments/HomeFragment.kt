@@ -12,8 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.CompletableObserver
-import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.observers.DisposableCompletableObserver
 import kotlinx.android.synthetic.main.fragment_home.*
 import pl.mattiahit.androidweatherk.MainActivity
@@ -40,10 +38,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         (activity?.application as WeatherApplication).getAppComponent().inject(this)
         this.mHomeViewModel = ViewModelProvider(this, this.mHomeViewModelFactory).get(HomeViewModel::class.java)
         this.locationAdapter = LocationAdapter(requireActivity(), weatherLocationsList) {
-            this.mHomeViewModel.setFavouriteLocation(WeatherLocation(Tools.getRandomLongId(), it.name, it.coord.lat, it.coord.lon, true))
-                .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this.getStoreLocationObserver())
+            if(!it.isFavourite){
+                this.mHomeViewModel.setFavouriteLocation(WeatherLocation(Tools.getRandomLongId(), it.name, it.coord.lat, it.coord.lon, true))
+                    .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this.getStoreLocationObserver())
+            }else{
+                // TODO Delete from list
+            }
+
         }
     }
 
@@ -53,10 +56,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         locations_list.adapter = this.locationAdapter
         searchLocationBtn.setOnClickListener {
             if (!locationNameEditText.text.isBlank()) {
+                weatherLocationsList.clear()
                 mHomeViewModel.getWeatherForCity(locationNameEditText.text.toString())
                     .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getLoadWeatherObserver())
+                    .subscribe(getLoadWeatherObserver(false))
             }
         }
         this.initializeLocation()
@@ -86,11 +90,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun loadStoredLocations() {
         this.mHomeViewModel.getStoredLocations().observe(requireActivity(), Observer {
             it?.let {
+                weatherLocationsList.clear()
                 for ( weatherLocation in it){
                     this.mHomeViewModel.getWeatherForLocation(weatherLocation)
                         .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(getLoadWeatherObserver())
+                        .subscribe(getLoadWeatherObserver(weatherLocation.isFavourite))
                 }
             }
         })
@@ -122,10 +127,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun getLoadWeatherObserver(): io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse> {
+    private fun getLoadWeatherObserver(isFavourite: Boolean): io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse> {
         return object : io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse>() {
             override fun onSuccess(value: WeatherResponse) {
-                weatherLocationsList.clear()
+                value.isFavourite = isFavourite
                 weatherLocationsList.add(value)
                 locationAdapter.notifyDataSetChanged()
             }

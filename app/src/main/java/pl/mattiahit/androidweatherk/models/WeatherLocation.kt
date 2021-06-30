@@ -6,8 +6,10 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
-data class WeatherLocation(@PrimaryKey val id: Long,
-                           @ColumnInfo(name = "location_name") val locationName: String,
-                           @ColumnInfo(name = "location_lat") val locationLat: Double,
-                           @ColumnInfo(name = "location_lon") val locationLon: Double,
-                           @Ignore val isFavourite: Boolean = true)
+data class WeatherLocation(@PrimaryKey var id: Long,
+                           @ColumnInfo(name = "location_name") var locationName: String,
+                           @ColumnInfo(name = "location_lat") var locationLat: Double,
+                           @ColumnInfo(name = "location_lon") var locationLon: Double,
+                           @Ignore var isFavourite: Boolean) {
+    constructor() : this(0, "", 0.0, 0.0, true)
+}

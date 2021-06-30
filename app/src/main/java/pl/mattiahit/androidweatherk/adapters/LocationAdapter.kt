@@ -39,11 +39,11 @@ class LocationAdapter(var context: Context, var weatherResponses: List<WeatherRe
             itemView.location_weather_wind.text = context.resources.getString(R.string.wind_speed_scale, weatherResponse.wind.speed.toInt())
             itemView.location_weather_clouds.text = context.resources.getString(R.string.clouds_scale, weatherResponse.clouds.all)
             itemView.location_weather_pressure.text = context.resources.getString(R.string.pressure_scale, weatherResponse.main.pressure)
-//            if(isFavourite){
-//                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_on)
-//            }else{
-//                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_off)
-//            }
+            if(weatherResponse.isFavourite){
+                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_on)
+            }else{
+                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_off)
+            }
             itemView.manage_favourites_btn.setOnClickListener {
                 listener(weatherResponse)
             };
