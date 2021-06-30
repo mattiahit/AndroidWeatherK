@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">AndroidWeatherK</string>
     <string name="weather_ico_desc">WeatherIco</string>
+    <string name="city_ico_desc">CityIco</string>
+    <string name="temperature_ico_desc">TemperatureIco</string>
+    <string name="wind_ico_desc">WindIco</string>
+    <string name="clouds_ico_desc">CloudsIco</string>
+    <string name="pressure_ico_desc">PressureIco</string>
     <string name="favourite_ico_desc">FavouriteIco</string>
+    <string name="degree_scale">%d °C</string>
+    <string name="wind_speed_scale">%d m/s</string>
+    <string name="clouds_scale">%d \%%</string>
+    <string name="pressure_scale">%d hPa</string>
 </resources>

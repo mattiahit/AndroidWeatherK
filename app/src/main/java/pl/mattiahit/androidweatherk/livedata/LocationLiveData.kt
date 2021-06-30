@@ -33,7 +33,7 @@ class LocationLiveData(private val context: Context) : LiveData<WeatherLocation>
 
     private fun setLocationData(location: Location?) {
         location?.let {
-            value = WeatherLocation(Tools.getRandomLongId(), getLocationNameByLatLon(it.latitude, it.longitude), it.latitude, it.longitude)
+            value = WeatherLocation(Tools.getRandomLongId(), getLocationNameByLatLon(it.latitude, it.longitude), it.latitude, it.longitude,false)
         }
     }
 

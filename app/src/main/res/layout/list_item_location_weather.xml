@@ -15,14 +15,21 @@
         android:scaleType="fitXY"
         android:contentDescription="@string/weather_ico_desc" />
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <GridLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:rowCount="3"
+        android:columnCount="4">
+
+        <ImageView
+            android:id="@+id/city_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/cityscape"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/city_ico_desc" />
 
         <TextView
             android:id="@+id/location_weather_city_name"
@@ -30,45 +37,86 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="16sp"
+            android:layout_margin="3dp"
             android:textColor="#000"/>
+
+        <ImageView
+            android:id="@+id/temperature_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/thermometer"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/temperature_ico_desc" />
 
         <TextView
             android:id="@+id/location_weather_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_margin="3dp"
             android:textColor="#726B68"/>
+
+        <ImageView
+            android:id="@+id/wind_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/wind"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/wind_ico_desc" />
 
         <TextView
             android:id="@+id/location_weather_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_margin="3dp"
             android:textColor="#726B68"/>
+
+        <ImageView
+            android:id="@+id/clouds_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/cloud"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/clouds_ico_desc" />
 
         <TextView
             android:id="@+id/location_weather_clouds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_margin="3dp"
             android:textColor="#726B68"/>
+
+        <ImageView
+            android:id="@+id/pressure_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/barometer"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/pressure_ico_desc" />
 
         <TextView
             android:id="@+id/location_weather_pressure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_margin="3dp"
             android:textColor="#726B68"/>
 
-    </LinearLayout>
+    </GridLayout>
 
     <ImageButton
-        android:visibility="gone"
         android:id="@+id/manage_favourites_btn"
-        android:layout_width="50dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_gravity="center_vertical|end"
         android:background="@android:color/transparent"
-        android:src="@android:drawable/btn_star"
-        android:contentDescription="@string/favourite_ico_desc" />
+        android:contentDescription="@string/favourite_ico_desc"
+        android:src="@android:drawable/btn_star" />
 
 </LinearLayout>

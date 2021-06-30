@@ -1,9 +1,15 @@
 package pl.mattiahit.androidweatherk.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import pl.mattiahit.androidweatherk.models.WeatherLocation
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
 import pl.mattiahit.androidweatherk.repositories.WeatherRepository
@@ -15,11 +21,29 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     private var mLocations: MutableLiveData<List<WeatherLocation>> = MutableLiveData<List<WeatherLocation>>()
 
     init {
-        this.mLocations.value = locationRepository.getLocationsFromDb()
+        locationRepository.getLocationsFromDb()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<List<WeatherLocation>>{
+            override fun onSubscribe(d: Disposable?) {
+            }
+
+            override fun onSuccess(t: List<WeatherLocation>?) {
+                mLocations.value = t
+            }
+
+            override fun onError(e: Throwable?) {
+                Log.e(javaClass.name, "Error Getting Locations From base")
+            }
+        })
     }
 
     fun getStoredLocations(): LiveData<List<WeatherLocation>> {
-        return this.mLocations
+        return mLocations
+    }
+
+    fun setFavouriteLocation(weatherLocation: WeatherLocation): Completable {
+        return locationRepository.setLocationToDb(weatherLocation)
     }
 
     fun getCurrentLocation(): LiveData<WeatherLocation> {

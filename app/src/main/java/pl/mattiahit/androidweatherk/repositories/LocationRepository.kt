@@ -1,5 +1,7 @@
 package pl.mattiahit.androidweatherk.repositories
 
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.database.AppDatabase
 import pl.mattiahit.androidweatherk.livedata.LocationLiveData
@@ -15,8 +17,16 @@ class LocationRepository(val application: WeatherApplication) {
         application.getAppComponent().inject(this)
     }
 
-    fun getLocationsFromDb(): List<WeatherLocation>? {
-        return this.appDatabase.locationDao().getAllLocations().value
+    fun getLocationsFromDb(): Single<List<WeatherLocation>> {
+        return this.appDatabase.locationDao().getAllLocations()
+    }
+
+    fun setLocationToDb(location: WeatherLocation): Completable {
+        return this.appDatabase.locationDao().insertLocation(location)
+    }
+
+    fun isLocationNameExistsInDb(name: String): Single<Boolean> {
+        return this.appDatabase.locationDao().isLocationExists(name)
     }
 
     fun getLocationFromGps(): LocationLiveData {
