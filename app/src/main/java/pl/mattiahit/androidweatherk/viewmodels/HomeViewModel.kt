@@ -46,6 +46,10 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
         return locationRepository.setLocationToDb(weatherLocation)
     }
 
+    fun deleteFromFavourites(name: String): Single<Int> {
+        return locationRepository.deleteLocationFromDb(name)
+    }
+
     fun getCurrentLocation(): LiveData<WeatherLocation> {
         return this.locationRepository.getLocationFromGps()
     }

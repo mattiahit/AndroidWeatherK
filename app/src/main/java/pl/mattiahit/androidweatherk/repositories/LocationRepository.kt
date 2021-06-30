@@ -29,6 +29,10 @@ class LocationRepository(val application: WeatherApplication) {
         return this.appDatabase.locationDao().isLocationExists(name)
     }
 
+    fun deleteLocationFromDb(name: String): Single<Int> {
+        return this.appDatabase.locationDao().deleteLocationByName(name)
+    }
+
     fun getLocationFromGps(): LocationLiveData {
         return this.locationLiveData
     }

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.observers.DisposableCompletableObserver
+import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import kotlinx.android.synthetic.main.fragment_home.*
 import pl.mattiahit.androidweatherk.MainActivity
 import pl.mattiahit.androidweatherk.R
@@ -44,9 +45,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this.getStoreLocationObserver())
             }else{
-                // TODO Delete from list
+                this.mHomeViewModel.deleteFromFavourites(it.name)
+                    .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this.getDeleteLocationObserver())
             }
-
         }
     }
 
@@ -115,10 +118,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
+    private fun getDeleteLocationObserver(): DisposableSingleObserver<Int> {
+        return object : DisposableSingleObserver<Int>(){
+            override fun onSuccess(t: Int?) {
+                loadStoredLocations()
+            }
+
+            override fun onError(e: Throwable) {
+                e.message?.let { Log.e(javaClass.name, it) };
+            }
+
+        }
+    }
+
     private fun getStoreLocationObserver(): DisposableCompletableObserver {
         return object: DisposableCompletableObserver() {
             override fun onComplete() {
                 Toast.makeText(requireContext(), "Location stored!", Toast.LENGTH_LONG).show()
+                loadStoredLocations()
             }
 
             override fun onError(e: Throwable?) {

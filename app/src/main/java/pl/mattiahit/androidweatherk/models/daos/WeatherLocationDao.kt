@@ -22,4 +22,7 @@ interface WeatherLocationDao {
 
     @Delete
     fun deleteLocation(location: WeatherLocation): Single<Int>
+
+    @Query("DELETE FROM WeatherLocation WHERE location_name LIKE :name")
+    fun deleteLocationByName(name: String): Single<Int>
 }
