@@ -11,4 +11,7 @@
     <string name="wind_speed_scale">%d m/s</string>
     <string name="clouds_scale">%d \%%</string>
     <string name="pressure_scale">%d hPa</string>
+    <string name="location_saved">Location saved!</string>
+    <string name="location_deleted">Location deleted!</string>
+    <string name="location_name">Location name</string>
 </resources>

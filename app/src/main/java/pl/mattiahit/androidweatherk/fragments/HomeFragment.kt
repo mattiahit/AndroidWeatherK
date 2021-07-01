@@ -33,6 +33,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     lateinit var mHomeViewModel: HomeViewModel
     private lateinit var locationAdapter: LocationAdapter
     private var weatherLocationsList = ArrayList<WeatherResponse>()
+    private var searchMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,16 +59,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         locations_list.layoutManager = LinearLayoutManager(activity)
         locations_list.adapter = this.locationAdapter
         searchLocationBtn.setOnClickListener {
-            if (!locationNameEditText.text.isBlank()) {
+            if (!locationNameEditText.text.isBlank() && !searchMode) {
+                (activity as MainActivity).hideKeyboard(view)
                 weatherLocationsList.clear()
+                searchMode = true
+                searchLocationBtn.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
                 mHomeViewModel.getWeatherForCity(locationNameEditText.text.toString())
                     .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getLoadWeatherObserver(false))
+            }else if(searchMode){
+                searchMode = false
+                mHomeViewModel.getLocationsFromDb()
+                locationNameEditText.text.clear()
+                searchLocationBtn.setImageResource(android.R.drawable.ic_menu_search)
             }
         }
         this.initializeLocation()
-        this.loadStoredLocations()
+        this.initLocationsObserver()
     }
 
     private fun initializeLocation() {
@@ -90,8 +99,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 //        })
     }
 
-    private fun loadStoredLocations() {
-        this.mHomeViewModel.getStoredLocations().observe(requireActivity(), Observer {
+    private fun initLocationsObserver() {
+        this.mHomeViewModel.getLocations().observe(requireActivity(), Observer {
             it?.let {
                 weatherLocationsList.clear()
                 for ( weatherLocation in it){
@@ -121,7 +130,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun getDeleteLocationObserver(): DisposableSingleObserver<Int> {
         return object : DisposableSingleObserver<Int>(){
             override fun onSuccess(t: Int?) {
-                loadStoredLocations()
+                Toast.makeText(requireContext(), getString(R.string.location_deleted), Toast.LENGTH_LONG).show()
+                mHomeViewModel.getLocationsFromDb()
             }
 
             override fun onError(e: Throwable) {
@@ -134,8 +144,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun getStoreLocationObserver(): DisposableCompletableObserver {
         return object: DisposableCompletableObserver() {
             override fun onComplete() {
-                Toast.makeText(requireContext(), "Location stored!", Toast.LENGTH_LONG).show()
-                loadStoredLocations()
+                Toast.makeText(requireContext(), getString(R.string.location_saved), Toast.LENGTH_LONG).show()
+                locationNameEditText.text.clear()
+                mHomeViewModel.getLocationsFromDb()
             }
 
             override fun onError(e: Throwable?) {

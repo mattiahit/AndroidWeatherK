@@ -21,24 +21,28 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     private var mLocations: MutableLiveData<List<WeatherLocation>> = MutableLiveData<List<WeatherLocation>>()
 
     init {
+        this.getLocationsFromDb()
+    }
+
+    fun getLocationsFromDb() {
         locationRepository.getLocationsFromDb()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : SingleObserver<List<WeatherLocation>>{
-            override fun onSubscribe(d: Disposable?) {
-            }
+                override fun onSubscribe(d: Disposable?) {
+                }
 
-            override fun onSuccess(t: List<WeatherLocation>?) {
-                mLocations.value = t
-            }
+                override fun onSuccess(t: List<WeatherLocation>?) {
+                    mLocations.value = t
+                }
 
-            override fun onError(e: Throwable?) {
-                Log.e(javaClass.name, "Error Getting Locations From base")
-            }
-        })
+                override fun onError(e: Throwable?) {
+                    Log.e(javaClass.name, "Error Getting Locations From base")
+                }
+            })
     }
 
-    fun getStoredLocations(): LiveData<List<WeatherLocation>> {
+    fun getLocations(): LiveData<List<WeatherLocation>> {
         return mLocations
     }
 
