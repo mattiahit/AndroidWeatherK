@@ -50,7 +50,7 @@ class LocationLiveData(private val context: Context) : LiveData<WeatherLocation>
         Log.i("GPS", "ACTIVE!!!")
         if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
             || ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
+            fusedLocationClient.getCurrentLocation(locationRequest.priority, null).addOnSuccessListener { location: Location? ->
                 location.also {
                     setLocationData(it)
                 }
@@ -69,7 +69,7 @@ class LocationLiveData(private val context: Context) : LiveData<WeatherLocation>
         val locationRequest : LocationRequest = LocationRequest.create().apply {
             interval = ONE_MINUTE
             fastestInterval = ONE_MINUTE/4
-            priority = LocationRequest.PRIORITY_LOW_POWER
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }
 }

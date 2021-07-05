@@ -34,6 +34,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var locationAdapter: LocationAdapter
     private var weatherLocationsList = ArrayList<WeatherResponse>()
     private var searchMode = false
+    private lateinit var locationFromGPS: WeatherLocation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +76,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 searchLocationBtn.setImageResource(android.R.drawable.ic_menu_search)
             }
         }
+        locateMeBtn.setOnClickListener {
+            locationNameEditText.setText(locationFromGPS.locationName)
+            searchLocationBtn.performClick()
+        }
         this.initializeLocation()
         this.initLocationsObserver()
     }
@@ -94,9 +99,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun requestLocationUpdates() {
-//        this.mHomeViewModel.getCurrentLocation().observe(this,{
-//            Log.i("GPS", it.locationName)
-//        })
+        this.mHomeViewModel.getCurrentLocation().observe(viewLifecycleOwner,{
+            Log.i("GPS", it.locationName)
+            locationFromGPS = it
+        })
     }
 
     private fun initLocationsObserver() {
