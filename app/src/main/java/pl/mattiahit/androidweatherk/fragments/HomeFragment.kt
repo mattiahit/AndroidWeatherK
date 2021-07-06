@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.observers.DisposableCompletableObserver
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 import pl.mattiahit.androidweatherk.MainActivity
 import pl.mattiahit.androidweatherk.R
@@ -41,14 +42,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         (activity?.application as WeatherApplication).getAppComponent().inject(this)
         this.mHomeViewModel = ViewModelProvider(this, this.mHomeViewModelFactory).get(HomeViewModel::class.java)
         this.locationAdapter = LocationAdapter(requireActivity(), weatherLocationsList) {
-            if(!it.isFavourite){
-                this.mHomeViewModel.setFavouriteLocation(WeatherLocation(Tools.getRandomLongId(), it.name, it.coord.lat, it.coord.lon, true))
-                    .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+            val isFavourite = mHomeViewModel.isLocationExistsAsFavourities(locationNameEditText.text.toString()).subscribeOn(Schedulers.io()).map { return@map it }.blockingGet()
+            if(!isFavourite){
+                this.mHomeViewModel.setFavouriteLocation(WeatherLocation(Tools.getRandomLongId(), it.name, it.coord.lat, it.coord.lon, isFavourite))
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this.getStoreLocationObserver())
             }else{
                 this.mHomeViewModel.deleteFromFavourites(it.name)
-                    .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this.getDeleteLocationObserver())
             }
@@ -61,27 +63,34 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         locations_list.adapter = this.locationAdapter
         searchLocationBtn.setOnClickListener {
             if (!locationNameEditText.text.isBlank() && !searchMode) {
+                val isFavourite = mHomeViewModel.isLocationExistsAsFavourities(locationNameEditText.text.toString()).subscribeOn(Schedulers.io()).map { return@map it }.blockingGet()
                 (activity as MainActivity).hideKeyboard(view)
                 weatherLocationsList.clear()
                 searchMode = true
                 searchLocationBtn.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
                 mHomeViewModel.getWeatherForCity(locationNameEditText.text.toString())
-                    .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getLoadWeatherObserver(false))
+                    .subscribe(getLoadWeatherObserver(isFavourite))
             }else if(searchMode){
-                searchMode = false
-                mHomeViewModel.getLocationsFromDb()
-                locationNameEditText.text.clear()
-                searchLocationBtn.setImageResource(android.R.drawable.ic_menu_search)
+                resetSearchArea()
             }
         }
         locateMeBtn.setOnClickListener {
-            locationNameEditText.setText(locationFromGPS.locationName)
-            searchLocationBtn.performClick()
+            locationFromGPS.let {
+                locationNameEditText.setText(it.locationName)
+                searchLocationBtn.performClick()
+            }
         }
         this.initializeLocation()
         this.initLocationsObserver()
+    }
+
+    private fun resetSearchArea() {
+        searchMode = false
+        mHomeViewModel.getLocationsFromDb()
+        locationNameEditText.text.clear()
+        searchLocationBtn.setImageResource(android.R.drawable.ic_menu_search)
     }
 
     private fun initializeLocation() {
@@ -111,7 +120,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 weatherLocationsList.clear()
                 for ( weatherLocation in it){
                     this.mHomeViewModel.getWeatherForLocation(weatherLocation)
-                        .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(getLoadWeatherObserver(weatherLocation.isFavourite))
                 }
@@ -137,7 +146,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         return object : DisposableSingleObserver<Int>(){
             override fun onSuccess(t: Int?) {
                 Toast.makeText(requireContext(), getString(R.string.location_deleted), Toast.LENGTH_LONG).show()
-                mHomeViewModel.getLocationsFromDb()
+                resetSearchArea()
             }
 
             override fun onError(e: Throwable) {
@@ -151,8 +160,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         return object: DisposableCompletableObserver() {
             override fun onComplete() {
                 Toast.makeText(requireContext(), getString(R.string.location_saved), Toast.LENGTH_LONG).show()
-                locationNameEditText.text.clear()
-                mHomeViewModel.getLocationsFromDb()
+                resetSearchArea()
             }
 
             override fun onError(e: Throwable?) {
@@ -161,7 +169,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun getLoadWeatherObserver(isFavourite: Boolean): io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse> {
+    private fun getLoadWeatherObserver(isFavourite: Boolean): DisposableSingleObserver<WeatherResponse> {
         return object : io.reactivex.rxjava3.observers.DisposableSingleObserver<WeatherResponse>() {
             override fun onSuccess(value: WeatherResponse) {
                 value.isFavourite = isFavourite

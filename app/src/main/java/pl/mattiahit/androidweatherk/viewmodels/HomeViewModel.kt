@@ -65,4 +65,8 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     fun getWeatherForLocation(location: WeatherLocation): Single<WeatherResponse> {
         return this.weatherRepository.getWeatherForLocation(location);
     }
+
+    fun isLocationExistsAsFavourities(name: String): Single<Boolean> {
+        return this.locationRepository.isLocationNameExistsInDb(name)
+    }
 }
