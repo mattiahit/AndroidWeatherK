@@ -1,6 +1,5 @@
 package pl.mattiahit.androidweatherk.rest
 
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import retrofit2.http.GET
