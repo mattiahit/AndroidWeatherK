@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity(){
 
     companion object {
-        const val PERMISSION_REQUEST_LOCATION = 123;
+        const val PERMISSION_REQUEST_LOCATION = 123
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,12 +18,8 @@ class MainActivity : AppCompatActivity(){
         setContentView(R.layout.activity_main)
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     fun hideKeyboard(view: View) {
         val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
