@@ -9,7 +9,7 @@ import javax.inject.Provider
 class HomeViewModelFactory @Inject constructor(private val homeViewModelProvider: Provider<HomeViewModel>): ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return homeViewModelProvider.get() as T
     }
 }

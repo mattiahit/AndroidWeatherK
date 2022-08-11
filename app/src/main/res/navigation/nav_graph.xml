@@ -2,10 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/homeFragment2">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="pl.mattiahit.androidweatherk.fragments.HomeFragment"
+        android:id="@+id/homeFragment2"
+        android:name="pl.mattiahit.androidweatherk.v2.fragments.HomeFragment"
         android:label="HomeFragment" />
 </navigation>

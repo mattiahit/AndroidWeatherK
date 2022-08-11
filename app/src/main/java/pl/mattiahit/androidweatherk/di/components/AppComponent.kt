@@ -14,6 +14,7 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(homeFragment: HomeFragment)
+    fun inject(homeFragmentV2: pl.mattiahit.androidweatherk.v2.fragments.HomeFragment)
     fun inject(locationRepository: LocationRepository)
     fun inject(weatherRepository: WeatherRepository)
     fun inject(homeViewModel: HomeViewModel)

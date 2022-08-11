@@ -10,40 +10,59 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import pl.mattiahit.androidweatherk.enums.DayTime
 import pl.mattiahit.androidweatherk.models.WeatherLocation
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
 import pl.mattiahit.androidweatherk.repositories.WeatherRepository
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository, private val weatherRepository: WeatherRepository) : ViewModel() {
 
-    private var mLocations: MutableLiveData<List<WeatherLocation>> = MutableLiveData<List<WeatherLocation>>()
+    var locations: MutableLiveData<List<WeatherLocation>> = MutableLiveData<List<WeatherLocation>>()
+    var weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
+    var dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
 
     init {
         this.getLocationsFromDb()
+        checkDayTime()
+    }
+
+    fun checkDayTime() {
+        val df = SimpleDateFormat("HH")
+        val time = df.format(Calendar.getInstance().time)
+        when(time.toInt()) {
+            in 0..5 -> dayTimeResourceData.value = DayTime.NIGHT
+            in 5..8 -> dayTimeResourceData.value = DayTime.DAWN
+            in 8..12 -> dayTimeResourceData.value = DayTime.MORNING
+            in 12..17 -> dayTimeResourceData.value = DayTime.MIDDAY
+            in 17..20 -> dayTimeResourceData.value = DayTime.DUSK
+            in 20..23 -> dayTimeResourceData.value = DayTime.NIGHT
+        }
     }
 
     fun getLocationsFromDb() {
-        locationRepository.getLocationsFromDb()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<List<WeatherLocation>>{
-                override fun onSubscribe(d: Disposable?) {
-                }
-
-                override fun onSuccess(t: List<WeatherLocation>?) {
-                    mLocations.value = t
-                }
-
-                override fun onError(e: Throwable?) {
-                    Log.e(javaClass.name, "Error Getting Locations From base")
-                }
-            })
+//        locationRepository.getLocationsFromDb()
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(object : SingleObserver<List<WeatherLocation>>{
+//                override fun onSubscribe(d: Disposable?) {
+//                }
+//
+//                override fun onSuccess(t: List<WeatherLocation>?) {
+//                    locations.value = t
+//                }
+//
+//                override fun onError(e: Throwable?) {
+//                    Log.e(javaClass.name, "Error Getting Locations From base")
+//                }
+//            })
     }
 
     fun getLocations(): LiveData<List<WeatherLocation>> {
-        return mLocations
+        return locations
     }
 
     fun setFavouriteLocation(weatherLocation: WeatherLocation): Completable {

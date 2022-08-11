@@ -39,7 +39,7 @@
             tools:ignore="ContentDescription" />
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/l_main_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -56,7 +56,38 @@
                 android:textStyle="bold"
                 tools:text="Kielce" />
 
+            <TextView
+                android:id="@+id/tv_main_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                tools:text="Temperature: 24 C" />
+
+            <TextView
+                android:id="@+id/tv_main_pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                tools:text="Pressure: 1100 hpa" />
+
+            <TextView
+                android:id="@+id/tv_main_wind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                tools:text="Wind: 20 km/h" />
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_data_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/iv_today_weather_ico"
+            tools:text="15:34 20.04.2020" />
 
         <ProgressBar
             android:id="@+id/pb_main_widget"

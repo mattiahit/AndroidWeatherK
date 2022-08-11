@@ -86,8 +86,7 @@
             android:layout_height="16dp"
             android:layout_margin="3dp"
             android:contentDescription="@string/clouds_ico_desc"
-            android:scaleType="fitXY"
-            android:src="@mipmap/cloud" />
+            android:scaleType="fitXY"/>
 
         <TextView
             android:id="@+id/location_weather_clouds"
