@@ -15,22 +15,22 @@ import pl.mattiahit.androidweatherk.models.WeatherLocation
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
 import pl.mattiahit.androidweatherk.repositories.WeatherRepository
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
+import pl.mattiahit.androidweatherk.utils.Tools
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository, private val weatherRepository: WeatherRepository) : ViewModel() {
 
-    var locations: MutableLiveData<List<WeatherLocation>> = MutableLiveData<List<WeatherLocation>>()
     var weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
     var dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
 
     init {
-        this.getLocationsFromDb()
+        //this.getLocationsFromDb()
         checkDayTime()
     }
 
-    fun checkDayTime() {
+    private fun checkDayTime() {
         val df = SimpleDateFormat("HH")
         val time = df.format(Calendar.getInstance().time)
         when(time.toInt()) {
@@ -44,26 +44,25 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     }
 
     fun getLocationsFromDb() {
-//        locationRepository.getLocationsFromDb()
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(object : SingleObserver<List<WeatherLocation>>{
-//                override fun onSubscribe(d: Disposable?) {
-//                }
-//
-//                override fun onSuccess(t: List<WeatherLocation>?) {
-//                    locations.value = t
-//                }
-//
-//                override fun onError(e: Throwable?) {
-//                    Log.e(javaClass.name, "Error Getting Locations From base")
-//                }
-//            })
+        locationRepository.getLocationsFromDb()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<List<WeatherLocation>>{
+                override fun onSubscribe(d: Disposable) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onSuccess(t: List<WeatherLocation>) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onError(e: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+            })
     }
 
-    fun getLocations(): LiveData<List<WeatherLocation>> {
-        return locations
-    }
 
     fun setFavouriteLocation(weatherLocation: WeatherLocation): Completable {
         return locationRepository.setLocationToDb(weatherLocation)
@@ -77,8 +76,22 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
         return this.locationRepository.getLocationFromGps()
     }
 
-    fun getWeatherForCity(cityName: String): Single<WeatherResponse> {
-        return this.weatherRepository.getWeatherForCity(cityName);
+    fun getWeatherForCity(cityName: String) {
+        this.weatherRepository.getWeatherForCity(cityName)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<WeatherResponse>{
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onSuccess(t: WeatherResponse) {
+                    weatherData.value = t
+                }
+
+                override fun onError(e: Throwable) {
+                    e.message?.let { Log.e("ERROR", it) }
+                }
+            })
     }
 
     fun getWeatherForLocation(location: WeatherLocation): Single<WeatherResponse> {

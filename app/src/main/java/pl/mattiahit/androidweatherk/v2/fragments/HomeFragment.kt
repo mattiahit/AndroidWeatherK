@@ -3,9 +3,13 @@ package pl.mattiahit.androidweatherk.v2.fragments
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_home_v2.view.*
+import kotlinx.android.synthetic.main.list_item_location_weather.view.*
 import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
@@ -57,6 +61,21 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
                 )
             }
             binding.ivBackground.setImageDrawable(backgroundDrawable)
+        }
+        mHomeViewModel.getCurrentLocation().observe(viewLifecycleOwner) {
+            binding.pbMainWidget.visibility = View.GONE
+            binding.tvCityName.text = it.locationName
+            mHomeViewModel.getWeatherForCity(it.locationName)
+        }
+        mHomeViewModel.weatherData.observe(viewLifecycleOwner) {
+            binding.tvMainTemperature.text = requireContext().resources.getString(R.string.degree_scale, (it.main.temp - 273).toInt())
+            binding.tvMainWind.text = requireContext().resources.getString(R.string.wind_speed_scale, it.wind.speed.toInt())
+            binding.tvMainPressure.text = requireContext().resources.getString(R.string.pressure_scale, it.main.pressure)
+            if(it.weather[0].main == "Clouds") {
+                binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloud, requireContext().theme))
+            } else {
+                binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloudy, requireContext().theme))
+            }
         }
     }
 }

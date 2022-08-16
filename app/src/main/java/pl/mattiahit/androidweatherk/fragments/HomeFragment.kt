@@ -58,32 +58,32 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        locations_list.layoutManager = LinearLayoutManager(activity)
-        locations_list.adapter = this.locationAdapter
-        searchLocationBtn.setOnClickListener {
-            if (!locationNameEditText.text.isBlank() && !searchMode) {
-                val isFavourite = mHomeViewModel.isLocationExistsAsFavourities(locationNameEditText.text.toString()).subscribeOn(Schedulers.io()).map { return@map it }.blockingGet()
-                (activity as MainActivity).hideKeyboard(view)
-                weatherLocationsList.clear()
-                searchMode = true
-                searchLocationBtn.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
-                mHomeViewModel.getWeatherForCity(locationNameEditText.text.toString())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getLoadWeatherObserver(isFavourite))
-            }else if(searchMode){
-                resetSearchArea()
-            }
-        }
-        locateMeBtn.setOnClickListener {
-            locationFromGPS.let {
-                locationNameEditText.setText(it.locationName)
-                searchLocationBtn.performClick()
-            }
-        }
-        this.initializeLocation()
-        this.initLocationsObserver()
+//        super.onViewCreated(view, savedInstanceState)
+//        locations_list.layoutManager = LinearLayoutManager(activity)
+//        locations_list.adapter = this.locationAdapter
+//        searchLocationBtn.setOnClickListener {
+//            if (!locationNameEditText.text.isBlank() && !searchMode) {
+//                val isFavourite = mHomeViewModel.isLocationExistsAsFavourities(locationNameEditText.text.toString()).subscribeOn(Schedulers.io()).map { return@map it }.blockingGet()
+//                (activity as MainActivity).hideKeyboard(view)
+//                weatherLocationsList.clear()
+//                searchMode = true
+//                searchLocationBtn.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+//                mHomeViewModel.getWeatherForCity(locationNameEditText.text.toString())
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(getLoadWeatherObserver(isFavourite))
+//            }else if(searchMode){
+//                resetSearchArea()
+//            }
+//        }
+//        locateMeBtn.setOnClickListener {
+//            locationFromGPS.let {
+//                locationNameEditText.setText(it.locationName)
+//                searchLocationBtn.performClick()
+//            }
+//        }
+//        this.initializeLocation()
+//        this.initLocationsObserver()
     }
 
     private fun resetSearchArea() {
@@ -115,17 +115,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initLocationsObserver() {
-        this.mHomeViewModel.getLocations().observe(requireActivity(), Observer {
-            it?.let {
-                weatherLocationsList.clear()
-                for ( weatherLocation in it){
-                    this.mHomeViewModel.getWeatherForLocation(weatherLocation)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(getLoadWeatherObserver(weatherLocation.isFavourite))
-                }
-            }
-        })
+//        this.mHomeViewModel.getLocations().observe(requireActivity(), Observer {
+//            it?.let {
+//                weatherLocationsList.clear()
+//                for ( weatherLocation in it){
+//                    this.mHomeViewModel.getWeatherForLocation(weatherLocation)
+//                        .subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(getLoadWeatherObserver(weatherLocation.isFavourite))
+//                }
+//            }
+//        })
     }
 
     @Deprecated("Deprecated in Java")

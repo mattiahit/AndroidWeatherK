@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/fragment_home_v2.xml" value="0.25" />
         <entry key="app/src/main/res/layout/list_item_location_weather.xml" value="0.240625" />
+        <entry key="app/src/main/res/xml/network_security_config.xml" value="0.164453125" />
       </map>
     </option>
   </component>
