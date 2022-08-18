@@ -1,6 +1,7 @@
 package pl.mattiahit.androidweatherk.v2.fragments
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -14,6 +15,7 @@ import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
 import pl.mattiahit.androidweatherk.enums.DayTime
+import pl.mattiahit.androidweatherk.utils.Tools
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
 import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
 import javax.inject.Inject
@@ -36,41 +38,18 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
             this.mHomeViewModelFactory
         )[HomeViewModel::class.java]
 
-        mHomeViewModel.dayTimeResourceData.observe(viewLifecycleOwner) {
-            val backgroundDrawable: Any
-            backgroundDrawable = when (it) {
-                DayTime.NIGHT -> resources.getDrawable(
-                    R.drawable.ic_landscape_night,
-                    requireContext().theme
-                )
-                DayTime.DAWN -> resources.getDrawable(
-                    R.drawable.ic_landscape_dawn,
-                    requireContext().theme
-                )
-                DayTime.MORNING -> resources.getDrawable(
-                    R.drawable.ic_landscape_morning,
-                    requireContext().theme
-                )
-                DayTime.MIDDAY -> resources.getDrawable(
-                    R.drawable.ic_landscape_midday,
-                    requireContext().theme
-                )
-                DayTime.DUSK -> resources.getDrawable(
-                    R.drawable.ic_landscape_dusk,
-                    requireContext().theme
-                )
-            }
-            binding.ivBackground.setImageDrawable(backgroundDrawable)
-        }
         mHomeViewModel.getCurrentLocation().observe(viewLifecycleOwner) {
             binding.pbMainWidget.visibility = View.GONE
             binding.tvCityName.text = it.locationName
             mHomeViewModel.getWeatherForCity(it.locationName)
         }
+
         mHomeViewModel.weatherData.observe(viewLifecycleOwner) {
             binding.tvMainTemperature.text = requireContext().resources.getString(R.string.degree_scale, (it.main.temp - 273).toInt())
             binding.tvMainWind.text = requireContext().resources.getString(R.string.wind_speed_scale, it.wind.speed.toInt())
             binding.tvMainPressure.text = requireContext().resources.getString(R.string.pressure_scale, it.main.pressure)
+            binding.tvMainClouds.text = requireContext().resources.getString(R.string.clouds_scale, it.clouds.all)
+            binding.tvDataTime.text = Tools.getCurrentTime()
             if(it.weather[0].main == "Clouds") {
                 binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloud, requireContext().theme))
             } else {

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-night/app_background.xml" value="0.2385" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/rounded_border.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/white_transparent_bg.xml" value="0.2125" />
