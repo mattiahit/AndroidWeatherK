@@ -23,9 +23,25 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository, private val weatherRepository: WeatherRepository) : ViewModel() {
 
     var weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
+    var dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
+
 
     init {
         //this.getLocationsFromDb()
+        checkDayTime()
+    }
+
+    private fun checkDayTime() {
+        val df = SimpleDateFormat("HH")
+        val time = df.format(Calendar.getInstance().time)
+        when(time.toInt()) {
+            in 0..5 -> dayTimeResourceData.value = DayTime.NIGHT
+            in 5..8 -> dayTimeResourceData.value = DayTime.DAWN
+            in 8..12 -> dayTimeResourceData.value = DayTime.MORNING
+            in 12..17 -> dayTimeResourceData.value = DayTime.MIDDAY
+            in 17..20 -> dayTimeResourceData.value = DayTime.DUSK
+            in 20..23 -> dayTimeResourceData.value = DayTime.NIGHT
+        }
     }
 
     fun getLocationsFromDb() {

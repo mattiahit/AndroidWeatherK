@@ -45,6 +45,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/iv_today_weather_ico"
             tools:text="Kielce" />
 
@@ -53,8 +54,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:columnCount="4"
+            android:layout_marginStart="5dp"
             android:orientation="horizontal"
             android:rowCount="3"
+            android:useDefaultMargins="true"
             android:layout_below="@+id/tv_city_name"
             android:layout_toEndOf="@id/iv_today_weather_ico">
 
@@ -65,7 +68,7 @@
                 android:layout_margin="3dp"
                 android:contentDescription="@string/temperature_ico_desc"
                 android:scaleType="fitXY"
-                android:src="@mipmap/thermometer" />
+                android:src="@drawable/thermometer" />
 
             <TextView
                 android:id="@+id/tv_main_temperature"
@@ -81,14 +84,14 @@
                 android:layout_margin="3dp"
                 android:contentDescription="@string/wind_ico_desc"
                 android:scaleType="fitXY"
-                android:src="@mipmap/wind" />
+                android:src="@drawable/wind" />
 
             <TextView
                 android:id="@+id/tv_main_wind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                tools:text="Wind: 20 km/h" />
+                tools:text="20 km/h" />
 
             <ImageView
                 android:id="@+id/clouds_icon"
@@ -105,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
                 android:textColor="#726B68"
+                tools:text="20 %"
                 android:textSize="14sp" />
 
             <ImageView
@@ -114,14 +118,14 @@
                 android:layout_margin="3dp"
                 android:contentDescription="@string/pressure_ico_desc"
                 android:scaleType="fitXY"
-                android:src="@mipmap/barometer" />
+                android:src="@drawable/barometer" />
 
             <TextView
                 android:id="@+id/tv_main_pressure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                tools:text="Pressure: 1100 hpa" />
+                tools:text="1100 hpa" />
 
         </GridLayout>
 

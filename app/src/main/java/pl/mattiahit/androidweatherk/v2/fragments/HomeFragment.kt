@@ -26,6 +26,7 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
     lateinit var mHomeViewModelFactory: HomeViewModelFactory
     private lateinit var binding: FragmentHomeV2Binding
     private lateinit var mHomeViewModel: HomeViewModel
+    private lateinit var dayTimeData: DayTime
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +38,10 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
             this,
             this.mHomeViewModelFactory
         )[HomeViewModel::class.java]
+
+        mHomeViewModel.dayTimeResourceData.observe(viewLifecycleOwner) {
+            dayTimeData = it
+        }
 
         mHomeViewModel.getCurrentLocation().observe(viewLifecycleOwner) {
             binding.pbMainWidget.visibility = View.GONE
@@ -50,10 +55,38 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
             binding.tvMainPressure.text = requireContext().resources.getString(R.string.pressure_scale, it.main.pressure)
             binding.tvMainClouds.text = requireContext().resources.getString(R.string.clouds_scale, it.clouds.all)
             binding.tvDataTime.text = Tools.getCurrentTime()
-            if(it.weather[0].main == "Clouds") {
-                binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloud, requireContext().theme))
-            } else {
-                binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloudy, requireContext().theme))
+            when(it.weather[0].main) {
+                "Clouds" -> {
+                    if(dayTimeData == DayTime.NIGHT)
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloudy_night, requireContext().theme))
+                    else
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloudy_day, requireContext().theme))
+                }
+                "Clear" -> {
+                    if(dayTimeData == DayTime.NIGHT)
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.night, requireContext().theme))
+                    else
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.sun, requireContext().theme))
+                }
+                "Rain" -> {
+                    if(dayTimeData == DayTime.NIGHT)
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.rainy_night, requireContext().theme))
+                    else
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.rainy_day, requireContext().theme))
+                }
+                "Thunderstorm" -> {
+                    if(dayTimeData == DayTime.NIGHT)
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.stormy_night, requireContext().theme))
+                    else
+                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.stormy_day, requireContext().theme))
+                }
+                "Mist" -> {
+                    binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.foog, requireContext().theme))
+                }
+                "Snow" -> {
+                    binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.snowy, requireContext().theme))
+                }
+                else -> binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloud, requireContext().theme))
             }
         }
     }

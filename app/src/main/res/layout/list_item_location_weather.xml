@@ -24,6 +24,7 @@
         android:columnCount="4"
         android:orientation="horizontal"
         android:rowCount="3"
+        android:useDefaultMargins="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/location_weather_icon"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,8 +35,7 @@
             android:layout_height="16dp"
             android:layout_margin="3dp"
             android:contentDescription="@string/city_ico_desc"
-            android:scaleType="fitXY"
-            android:src="@mipmap/cityscape" />
+            android:scaleType="fitXY"/>
 
         <TextView
             android:id="@+id/location_weather_city_name"
@@ -53,7 +53,7 @@
             android:layout_margin="3dp"
             android:contentDescription="@string/temperature_ico_desc"
             android:scaleType="fitXY"
-            android:src="@mipmap/thermometer" />
+            android:src="@drawable/thermometer" />
 
         <TextView
             android:id="@+id/location_weather_temperature"
@@ -70,7 +70,7 @@
             android:layout_margin="3dp"
             android:contentDescription="@string/wind_ico_desc"
             android:scaleType="fitXY"
-            android:src="@mipmap/wind" />
+            android:src="@drawable/wind" />
 
         <TextView
             android:id="@+id/location_weather_wind"
@@ -103,7 +103,7 @@
             android:layout_margin="3dp"
             android:contentDescription="@string/pressure_ico_desc"
             android:scaleType="fitXY"
-            android:src="@mipmap/barometer" />
+            android:src="@drawable/barometer" />
 
         <TextView
             android:id="@+id/location_weather_pressure"
