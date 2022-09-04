@@ -21,4 +21,10 @@ object Tools {
         val df = SimpleDateFormat("HH:mm")
         return df.format(time)
     }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getDayAndMonthFromTimestamp(time: Int): String {
+        val df = SimpleDateFormat("dd.MM")
+        return df.format(Date(time.toLong() * 1000))
+    }
 }

@@ -1,6 +1,10 @@
 package pl.mattiahit.androidweatherk.viewmodels
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,10 +14,14 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.enums.DayTime
+import pl.mattiahit.androidweatherk.models.ForecastDataLocal
 import pl.mattiahit.androidweatherk.models.WeatherLocation
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
 import pl.mattiahit.androidweatherk.repositories.WeatherRepository
+import pl.mattiahit.androidweatherk.rest.model.ForecastData
+import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import pl.mattiahit.androidweatherk.utils.Tools
 import java.text.SimpleDateFormat
@@ -23,6 +31,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository, private val weatherRepository: WeatherRepository) : ViewModel() {
 
     var weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
+    var forecastData: MutableLiveData<ForecastResponse> = MutableLiveData<ForecastResponse>()
     var dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
 
 
@@ -95,9 +104,80 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
             })
     }
 
-    fun getWeatherForLocation(location: WeatherLocation): Single<WeatherResponse> {
-        return this.weatherRepository.getWeatherForLocation(location);
+    fun getForecastForCity(cityName: String) {
+        this.weatherRepository.getForecastForCity(cityName)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<ForecastResponse> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onSuccess(t: ForecastResponse) {
+                    forecastData.value = t
+                }
+
+                override fun onError(e: Throwable) {
+                    e.message?.let { Log.e("ERROR", it) }
+                }
+
+            })
     }
+
+    fun prepareForecastDataLocalList(t: ForecastResponse, context: Context): List<ForecastDataLocal> {
+        val result = mutableListOf<ForecastDataLocal>()
+        var date = ""
+        for(fData:ForecastData in t.list){
+            if(fData.dt_txt.contains("12:00")) {
+                val tempData = Tools.getDayAndMonthFromTimestamp(fData.dt)
+                if(date !== tempData){
+                    date = tempData
+                    result.add(ForecastDataLocal(
+                        date,
+                        context.resources.getString(R.string.degree_scale, (fData.main.temp - 273).toInt()),
+                        getDrawableFromName(fData.weather[0].main, context))
+                    )
+                }
+            }
+        }
+        return result
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    fun getDrawableFromName(name: String, context: Context): Drawable =
+        when(name) {
+            "Clouds" -> {
+                if(dayTimeResourceData.value == DayTime.NIGHT)
+                    context.resources.getDrawable(R.drawable.cloudy_night, context.theme)
+                else
+                    context.resources.getDrawable(R.drawable.cloudy_day, context.theme)
+            }
+            "Clear" -> {
+                if(dayTimeResourceData.value == DayTime.NIGHT)
+                    context.resources.getDrawable(R.drawable.night, context.theme)
+                else
+                    context.resources.getDrawable(R.drawable.sun, context.theme)
+            }
+            "Rain" -> {
+                if(dayTimeResourceData.value == DayTime.NIGHT)
+                    context.resources.getDrawable(R.drawable.rainy_night, context.theme)
+                else
+                    context.resources.getDrawable(R.drawable.rainy_day, context.theme)
+            }
+            "Thunderstorm" -> {
+                if(dayTimeResourceData.value == DayTime.NIGHT)
+                    context.resources.getDrawable(R.drawable.stormy_night, context.theme)
+                else
+                    context.resources.getDrawable(R.drawable.stormy_day, context.theme)
+            }
+            "Mist" -> {
+                context.resources.getDrawable(R.drawable.foog, context.theme)
+            }
+            "Snow" -> {
+                context.resources.getDrawable(R.drawable.snowy, context.theme)
+            }
+            else -> context.resources.getDrawable(R.drawable.cloud, context.theme)
+        }
+
 
     fun isLocationExistsAsFavourities(name: String): Single<Boolean> {
         return this.locationRepository.isLocationNameExistsInDb(name)

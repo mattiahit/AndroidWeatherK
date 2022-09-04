@@ -15,27 +15,27 @@
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
+        android:background="@drawable/data_transparent_bg"
+        android:orientation="vertical"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/data_transparent_bg"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/iv_today_weather_ico"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:scaleType="fitCenter"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
             android:src="@drawable/cloudy_day"
             tools:ignore="ContentDescription" />
 
@@ -43,23 +43,23 @@
             android:id="@+id/tv_city_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/iv_today_weather_ico"
+            android:textSize="16sp"
+            android:textStyle="bold"
             tools:text="Kielce" />
 
         <GridLayout
             android:id="@+id/gridLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:columnCount="4"
+            android:layout_below="@+id/tv_city_name"
             android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/iv_today_weather_ico"
+            android:columnCount="4"
             android:orientation="horizontal"
             android:rowCount="3"
-            android:useDefaultMargins="true"
-            android:layout_below="@+id/tv_city_name"
-            android:layout_toEndOf="@id/iv_today_weather_ico">
+            android:useDefaultMargins="true">
 
             <ImageView
                 android:id="@+id/temperature_icon"
@@ -99,8 +99,8 @@
                 android:layout_height="16dp"
                 android:layout_margin="3dp"
                 android:contentDescription="@string/clouds_ico_desc"
-                android:src="@drawable/cloud_icon"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY"
+                android:src="@drawable/cloud_icon" />
 
             <TextView
                 android:id="@+id/tv_main_clouds"
@@ -108,8 +108,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
                 android:textColor="#726B68"
-                tools:text="20 %"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="20 %" />
 
             <ImageView
                 android:id="@+id/pressure_icon"
@@ -129,64 +129,42 @@
 
         </GridLayout>
 
-<!--        <LinearLayout-->
-<!--            android:id="@+id/l_main_data"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            android:layout_marginStart="15dp"-->
-<!--            android:layout_toEndOf="@id/iv_today_weather_ico"-->
-<!--            tools:layout_editor_absoluteX="5dp"-->
-<!--            tools:layout_editor_absoluteY="5dp">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_city_name"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textSize="16sp"-->
-<!--                android:textStyle="bold"-->
-<!--                tools:text="Kielce" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_main_temperature"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textSize="14sp"-->
-<!--                tools:text="Temperature: 24 C" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_main_pressure"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textSize="14sp"-->
-<!--                tools:text="Pressure: 1100 hpa" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_main_wind"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textSize="14sp"-->
-<!--                tools:text="Wind: 20 km/h" />-->
-
-<!--        </LinearLayout>-->
-
         <TextView
             android:id="@+id/tv_data_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/iv_today_weather_ico"
+            android:layout_alignParentEnd="true"
             android:textSize="12sp"
             android:textStyle="italic"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/iv_today_weather_ico"
             tools:text="15:34 20.04.2020" />
 
         <ProgressBar
             android:id="@+id/pb_main_widget"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/forecast_data_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+
+
+
+    </LinearLayout>
 
 
     

@@ -1,23 +1,19 @@
 package pl.mattiahit.androidweatherk.v2.fragments
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_home_v2.view.*
-import kotlinx.android.synthetic.main.list_item_location_weather.view.*
 import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
 import pl.mattiahit.androidweatherk.enums.DayTime
+import pl.mattiahit.androidweatherk.models.ForecastDataLocal
 import pl.mattiahit.androidweatherk.utils.Tools
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
 import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
+import pl.mattiahit.androidweatherk.widgets.ForecastDataView
 import javax.inject.Inject
 
 class HomeFragment : Fragment(R.layout.fragment_home_v2) {
@@ -47,6 +43,7 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
             binding.pbMainWidget.visibility = View.GONE
             binding.tvCityName.text = it.locationName
             mHomeViewModel.getWeatherForCity(it.locationName)
+            mHomeViewModel.getForecastForCity(it.locationName)
         }
 
         mHomeViewModel.weatherData.observe(viewLifecycleOwner) {
@@ -55,38 +52,17 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
             binding.tvMainPressure.text = requireContext().resources.getString(R.string.pressure_scale, it.main.pressure)
             binding.tvMainClouds.text = requireContext().resources.getString(R.string.clouds_scale, it.clouds.all)
             binding.tvDataTime.text = Tools.getCurrentTime()
-            when(it.weather[0].main) {
-                "Clouds" -> {
-                    if(dayTimeData == DayTime.NIGHT)
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloudy_night, requireContext().theme))
-                    else
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloudy_day, requireContext().theme))
-                }
-                "Clear" -> {
-                    if(dayTimeData == DayTime.NIGHT)
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.night, requireContext().theme))
-                    else
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.sun, requireContext().theme))
-                }
-                "Rain" -> {
-                    if(dayTimeData == DayTime.NIGHT)
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.rainy_night, requireContext().theme))
-                    else
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.rainy_day, requireContext().theme))
-                }
-                "Thunderstorm" -> {
-                    if(dayTimeData == DayTime.NIGHT)
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.stormy_night, requireContext().theme))
-                    else
-                        binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.stormy_day, requireContext().theme))
-                }
-                "Mist" -> {
-                    binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.foog, requireContext().theme))
-                }
-                "Snow" -> {
-                    binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.snowy, requireContext().theme))
-                }
-                else -> binding.ivTodayWeatherIco.setImageDrawable(resources.getDrawable(R.drawable.cloud, requireContext().theme))
+            binding.ivTodayWeatherIco.setImageDrawable(mHomeViewModel.getDrawableFromName(it.weather[0].main, requireContext()))
+        }
+        mHomeViewModel.forecastData.observe(viewLifecycleOwner) {
+            binding.forecastDataLayout.removeAllViews()
+            val dataList = mHomeViewModel.prepareForecastDataLocalList(it, requireContext())
+            for(fdLocal: ForecastDataLocal in dataList) {
+                binding.forecastDataLayout.addView(
+                    ForecastDataView(
+                        requireContext(),
+                        fdLocal)
+                )
             }
         }
     }
