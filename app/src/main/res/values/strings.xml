@@ -7,7 +7,7 @@
     <string name="clouds_ico_desc">CloudsIco</string>
     <string name="pressure_ico_desc">PressureIco</string>
     <string name="favourite_ico_desc">FavouriteIco</string>
-    <string name="degree_scale">%d °C</string>
+    <string name="degree_scale">%d°C</string>
     <string name="wind_speed_scale">%d m/s</string>
     <string name="clouds_scale">%d \%%</string>
     <string name="pressure_scale">%d hPa</string>

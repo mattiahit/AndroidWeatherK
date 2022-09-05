@@ -2,7 +2,9 @@ package pl.mattiahit.androidweatherk.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,6 +19,8 @@ class ForecastDataView(context: Context, forecastData: ForecastDataLocal) : Line
         view.findViewById<ImageView>(R.id.iv_forecast_data_image).setImageDrawable(forecastData.weatherDrawable)
         view.findViewById<TextView>(R.id.tv_forecast_data_date).text = forecastData.date
         view.findViewById<TextView>(R.id.tv_forecast_data_temperature).text = forecastData.tempString
+        this.setPadding(5, 0, 5, 0)
+        this.gravity = Gravity.CENTER
         this.addView(view)
     }
 }
