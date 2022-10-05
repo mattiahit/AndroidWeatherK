@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
@@ -26,13 +27,21 @@ import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import pl.mattiahit.androidweatherk.utils.Tools
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository, private val weatherRepository: WeatherRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository,
+                                        private val weatherRepository: WeatherRepository)
+    : ViewModel() {
 
-    var weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
-    var forecastData: MutableLiveData<ForecastResponse> = MutableLiveData<ForecastResponse>()
-    var dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
+    private var _weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
+    var weatherData: LiveData<WeatherResponse> = _weatherData
+    private var _forecastData: MutableLiveData<ForecastResponse> = MutableLiveData<ForecastResponse>()
+    var forecastData: LiveData<ForecastResponse> = _forecastData
+    private var _dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
+    var dayTimeResourceData: LiveData<DayTime> = _dayTimeResourceData
+
+    private lateinit var _observeOnThread: Scheduler
 
 
     init {
@@ -40,16 +49,21 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
         checkDayTime()
     }
 
+    fun setObserveOnThread(scheduler: Scheduler){
+        _observeOnThread = scheduler
+    }
+
+    @SuppressLint("SimpleDateFormat")
     private fun checkDayTime() {
         val df = SimpleDateFormat("HH")
         val time = df.format(Calendar.getInstance().time)
         when(time.toInt()) {
-            in 0..5 -> dayTimeResourceData.value = DayTime.NIGHT
-            in 5..8 -> dayTimeResourceData.value = DayTime.DAWN
-            in 8..12 -> dayTimeResourceData.value = DayTime.MORNING
-            in 12..17 -> dayTimeResourceData.value = DayTime.MIDDAY
-            in 17..20 -> dayTimeResourceData.value = DayTime.DUSK
-            in 20..23 -> dayTimeResourceData.value = DayTime.NIGHT
+            in 0..5 -> _dayTimeResourceData.value = DayTime.NIGHT
+            in 5..8 -> _dayTimeResourceData.value = DayTime.DAWN
+            in 8..12 -> _dayTimeResourceData.value = DayTime.MORNING
+            in 12..17 -> _dayTimeResourceData.value = DayTime.MIDDAY
+            in 17..20 -> _dayTimeResourceData.value = DayTime.DUSK
+            in 20..23 -> _dayTimeResourceData.value = DayTime.NIGHT
         }
     }
 
@@ -95,13 +109,30 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
                 }
 
                 override fun onSuccess(t: WeatherResponse) {
-                    weatherData.value = t
+                    _weatherData.postValue(t)
                 }
 
                 override fun onError(e: Throwable) {
                     e.message?.let { Log.e("ERROR", it) }
                 }
             })
+    }
+
+    fun getWeatherForCity(cityName: String, observer: SingleObserver<WeatherResponse>) {
+        if(cityName.isNotEmpty()) {
+            this.weatherRepository.getWeatherForCity(cityName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(_observeOnThread)
+                .timeout(15, TimeUnit.SECONDS)
+                .onErrorReturnItem(
+                    this.errorWeatherResponseWithMessage("Something went wrong...")
+                )
+                .subscribe(observer)
+        } else {
+            observer.onSuccess(
+                this.errorWeatherResponseWithMessage("City Name Should Not Be empty")
+            )
+        }
     }
 
     fun getForecastForCity(cityName: String) {
@@ -113,7 +144,7 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
                 }
 
                 override fun onSuccess(t: ForecastResponse) {
-                    forecastData.value = t
+                    _forecastData.value = t
                 }
 
                 override fun onError(e: Throwable) {
@@ -146,25 +177,25 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     fun getDrawableFromName(name: String, context: Context): Drawable =
         when(name) {
             "Clouds" -> {
-                if(dayTimeResourceData.value == DayTime.NIGHT)
+                if(_dayTimeResourceData.value == DayTime.NIGHT)
                     context.resources.getDrawable(R.drawable.cloudy_night, context.theme)
                 else
                     context.resources.getDrawable(R.drawable.cloudy_day, context.theme)
             }
             "Clear" -> {
-                if(dayTimeResourceData.value == DayTime.NIGHT)
+                if(_dayTimeResourceData.value == DayTime.NIGHT)
                     context.resources.getDrawable(R.drawable.night, context.theme)
                 else
                     context.resources.getDrawable(R.drawable.sun, context.theme)
             }
             "Rain" -> {
-                if(dayTimeResourceData.value == DayTime.NIGHT)
+                if(_dayTimeResourceData.value == DayTime.NIGHT)
                     context.resources.getDrawable(R.drawable.rainy_night, context.theme)
                 else
                     context.resources.getDrawable(R.drawable.rainy_day, context.theme)
             }
             "Thunderstorm" -> {
-                if(dayTimeResourceData.value == DayTime.NIGHT)
+                if(_dayTimeResourceData.value == DayTime.NIGHT)
                     context.resources.getDrawable(R.drawable.stormy_night, context.theme)
                 else
                     context.resources.getDrawable(R.drawable.stormy_day, context.theme)
@@ -182,4 +213,23 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     fun isLocationExistsAsFavourities(name: String): Single<Boolean> {
         return this.locationRepository.isLocationNameExistsInDb(name)
     }
+
+    private fun errorWeatherResponseWithMessage(message: String): WeatherResponse =
+        WeatherResponse(
+            null,
+            null,
+            -1,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            message
+        )
 }

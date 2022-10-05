@@ -43,17 +43,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         this.mHomeViewModel = ViewModelProvider(this, this.mHomeViewModelFactory).get(HomeViewModel::class.java)
         this.locationAdapter = LocationAdapter(requireActivity(), weatherLocationsList) {
             val isFavourite = mHomeViewModel.isLocationExistsAsFavourities(locationNameEditText.text.toString()).subscribeOn(Schedulers.io()).map { return@map it }.blockingGet()
-            if(!isFavourite){
-                this.mHomeViewModel.setFavouriteLocation(WeatherLocation(Tools.getRandomLongId(), it.name, it.coord.lat, it.coord.lon, isFavourite))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this.getStoreLocationObserver())
-            }else{
-                this.mHomeViewModel.deleteFromFavourites(it.name)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this.getDeleteLocationObserver())
-            }
+//            if(!isFavourite){
+//                this.mHomeViewModel.setFavouriteLocation(WeatherLocation(Tools.getRandomLongId(), it.name, it.coord.lat, it.coord.lon, isFavourite))
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(this.getStoreLocationObserver())
+//            }else{
+//                this.mHomeViewModel.deleteFromFavourites(it.name)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(this.getDeleteLocationObserver())
+//            }
         }
     }
 

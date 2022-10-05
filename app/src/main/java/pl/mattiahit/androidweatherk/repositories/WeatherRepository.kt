@@ -29,4 +29,6 @@ class WeatherRepository(val application: WeatherApplication) {
     fun getForecastForCity(city: String): Single<ForecastResponse> {
         return this.apiService.getForecastForCity(city, BaseRestTask.API_KEY)
     }
+
+
 }

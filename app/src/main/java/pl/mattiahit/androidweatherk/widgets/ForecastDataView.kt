@@ -19,7 +19,7 @@ class ForecastDataView(context: Context, forecastData: ForecastDataLocal) : Line
         view.findViewById<ImageView>(R.id.iv_forecast_data_image).setImageDrawable(forecastData.weatherDrawable)
         view.findViewById<TextView>(R.id.tv_forecast_data_date).text = forecastData.date
         view.findViewById<TextView>(R.id.tv_forecast_data_temperature).text = forecastData.tempString
-        this.setPadding(5, 0, 5, 0)
+        this.setPadding(5, 5, 5, 5)
         this.gravity = Gravity.CENTER
         this.addView(view)
     }

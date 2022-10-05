@@ -31,19 +31,23 @@ class LocationAdapter(var context: Context, var weatherResponses: List<WeatherRe
     inner class LocationHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
         fun bind(weatherResponse: WeatherResponse){
-            weatherResponse.weather.let {
+            weatherResponse.weather?.let {
                 Picasso.get().load("http://openweathermap.org/img/w/" + it[0].icon + ".png").into(itemView.location_weather_icon)
             }
             itemView.location_weather_city_name.text = weatherResponse.name
-            itemView.location_weather_temperature.text = context.resources.getString(R.string.degree_scale, (weatherResponse.main.temp - 273).toInt())
-            itemView.location_weather_wind.text = context.resources.getString(R.string.wind_speed_scale, weatherResponse.wind.speed.toInt())
-            itemView.location_weather_clouds.text = context.resources.getString(R.string.clouds_scale, weatherResponse.clouds.all)
-            itemView.location_weather_pressure.text = context.resources.getString(R.string.pressure_scale, weatherResponse.main.pressure)
-            if(weatherResponse.isFavourite){
-                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_on)
-            }else{
-                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_off)
-            }
+            itemView.location_weather_temperature.text = context.resources.getString(R.string.degree_scale,
+                if(weatherResponse.main != null) (weatherResponse.main.temp - 273).toInt() else -1)
+            itemView.location_weather_wind.text = context.resources.getString(R.string.wind_speed_scale,
+                if(weatherResponse.wind != null) weatherResponse.wind.speed.toInt() else -1)
+            itemView.location_weather_clouds.text = context.resources.getString(R.string.clouds_scale,
+                if(weatherResponse.clouds != null) weatherResponse.clouds.all else -1)
+            itemView.location_weather_pressure.text = context.resources.getString(R.string.pressure_scale,
+                if(weatherResponse.main != null) weatherResponse.main.pressure else -1)
+//            if(weatherResponse.isFavourite){
+//                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_on)
+//            }else{
+//                itemView.manage_favourites_btn.setImageResource(android.R.drawable.btn_star_big_off)
+//            }
             itemView.manage_favourites_btn.setOnClickListener {
                 listener(weatherResponse)
             };
