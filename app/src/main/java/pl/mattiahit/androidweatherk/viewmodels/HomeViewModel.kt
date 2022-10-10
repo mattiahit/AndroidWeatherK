@@ -24,6 +24,7 @@ import pl.mattiahit.androidweatherk.repositories.WeatherRepository
 import pl.mattiahit.androidweatherk.rest.model.ForecastData
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
+import pl.mattiahit.androidweatherk.utils.SchedulerProvider
 import pl.mattiahit.androidweatherk.utils.Tools
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,7 +32,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val locationRepository: LocationRepository,
-                                        private val weatherRepository: WeatherRepository)
+                                        private val weatherRepository: WeatherRepository,
+                                        private val schedulerProvider: SchedulerProvider)
     : ViewModel() {
 
     private var _weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
@@ -41,17 +43,6 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     private var _dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
     var dayTimeResourceData: LiveData<DayTime> = _dayTimeResourceData
 
-    private lateinit var _observeOnThread: Scheduler
-
-
-    init {
-        //this.getLocationsFromDb()
-        checkDayTime()
-    }
-
-    fun setObserveOnThread(scheduler: Scheduler){
-        _observeOnThread = scheduler
-    }
 
     @SuppressLint("SimpleDateFormat")
     private fun checkDayTime() {
@@ -100,29 +91,11 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
         return this.locationRepository.getLocationFromGps()
     }
 
-    fun getWeatherForCity(cityName: String) {
-        this.weatherRepository.getWeatherForCity(cityName)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<WeatherResponse>{
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                override fun onSuccess(t: WeatherResponse) {
-                    _weatherData.postValue(t)
-                }
-
-                override fun onError(e: Throwable) {
-                    e.message?.let { Log.e("ERROR", it) }
-                }
-            })
-    }
-
     fun getWeatherForCity(cityName: String, observer: SingleObserver<WeatherResponse>) {
         if(cityName.isNotEmpty()) {
             this.weatherRepository.getWeatherForCity(cityName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(_observeOnThread)
+                .subscribeOn(schedulerProvider.subscribeScheduler)
+                .observeOn(schedulerProvider.observeOnScheduler)
                 .timeout(15, TimeUnit.SECONDS)
                 .onErrorReturnItem(
                     this.errorWeatherResponseWithMessage("Something went wrong...")

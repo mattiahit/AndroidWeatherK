@@ -41,7 +41,6 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
             this.mHomeViewModelFactory
         )[HomeViewModel::class.java]
 
-        mHomeViewModel.setObserveOnThread(AndroidSchedulers.mainThread())
         mHomeViewModel.dayTimeResourceData.observe(viewLifecycleOwner) {
             dayTimeData = it
         }
@@ -49,6 +48,7 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
         mHomeViewModel.getCurrentLocation().observe(viewLifecycleOwner) {
             binding.pbMainWidget.visibility = View.GONE
             binding.tvCityName.text = it.locationName
+
             mHomeViewModel.getWeatherForCity(it.locationName, object : SingleObserver<WeatherResponse>{
                 override fun onSubscribe(d: Disposable) {
                 }
