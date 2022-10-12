@@ -15,6 +15,7 @@ import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
 import pl.mattiahit.androidweatherk.enums.DayTime
 import pl.mattiahit.androidweatherk.models.ForecastDataLocal
+import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import pl.mattiahit.androidweatherk.utils.Tools
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
@@ -68,7 +69,17 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
                     e.message?.let { Log.e("ERROR", e.message!!) }
                 }
             })
-            mHomeViewModel.getForecastForCity(it.locationName)
+            mHomeViewModel.getForecastForCity(it.locationName, object : SingleObserver<ForecastResponse>{
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onSuccess(t: ForecastResponse) {
+                }
+
+                override fun onError(e: Throwable) {
+                }
+
+            })
         }
 
 //        mHomeViewModel.weatherData.observe(viewLifecycleOwner) {

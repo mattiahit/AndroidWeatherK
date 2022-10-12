@@ -21,6 +21,7 @@ import pl.mattiahit.androidweatherk.models.ForecastDataLocal
 import pl.mattiahit.androidweatherk.models.WeatherLocation
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
 import pl.mattiahit.androidweatherk.repositories.WeatherRepository
+import pl.mattiahit.androidweatherk.rest.model.City
 import pl.mattiahit.androidweatherk.rest.model.ForecastData
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
@@ -36,8 +37,6 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
                                         private val schedulerProvider: SchedulerProvider)
     : ViewModel() {
 
-    private var _weatherData: MutableLiveData<WeatherResponse> = MutableLiveData<WeatherResponse>()
-    var weatherData: LiveData<WeatherResponse> = _weatherData
     private var _forecastData: MutableLiveData<ForecastResponse> = MutableLiveData<ForecastResponse>()
     var forecastData: LiveData<ForecastResponse> = _forecastData
     private var _dayTimeResourceData: MutableLiveData<DayTime> = MutableLiveData()
@@ -108,38 +107,39 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
         }
     }
 
-    fun getForecastForCity(cityName: String) {
-        this.weatherRepository.getForecastForCity(cityName)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<ForecastResponse> {
-                override fun onSubscribe(d: Disposable) {
-                }
+    fun getForecastForCity(cityName: String, observer: SingleObserver<ForecastResponse>) {
+        if(cityName.isNotEmpty()){
+            this.weatherRepository.getForecastForCity(cityName)
+                .subscribeOn(schedulerProvider.subscribeScheduler)
+                .observeOn(schedulerProvider.observeOnScheduler)
+                .timeout(15, TimeUnit.SECONDS)
+                .onErrorReturnItem(
+                    this.errorForecastResponseWithMessage("Something went wrong...")
+                )
+                .subscribe(observer)
+        } else {
+            observer.onSuccess(
+                this.errorForecastResponseWithMessage("City Name Should Not Be empty")
+            )
+        }
 
-                override fun onSuccess(t: ForecastResponse) {
-                    _forecastData.value = t
-                }
-
-                override fun onError(e: Throwable) {
-                    e.message?.let { Log.e("ERROR", it) }
-                }
-
-            })
     }
 
     fun prepareForecastDataLocalList(t: ForecastResponse, context: Context): List<ForecastDataLocal> {
         val result = mutableListOf<ForecastDataLocal>()
         var date = ""
-        for(fData:ForecastData in t.list){
-            if(fData.dt_txt.contains("12:00")) {
-                val tempData = Tools.getDayAndMonthFromTimestamp(fData.dt)
-                if(date !== tempData){
-                    date = tempData
-                    result.add(ForecastDataLocal(
-                        date,
-                        context.resources.getString(R.string.degree_scale, (fData.main.temp - 273).toInt()),
-                        getDrawableFromName(fData.weather[0].main, context))
-                    )
+        t.list?.let {
+            for(fData:ForecastData in it){
+                if(fData.dt_txt.contains("12:00")) {
+                    val tempData = Tools.getDayAndMonthFromTimestamp(fData.dt)
+                    if(date !== tempData){
+                        date = tempData
+                        result.add(ForecastDataLocal(
+                            date,
+                            context.resources.getString(R.string.degree_scale, (fData.main.temp - 273).toInt()),
+                            getDrawableFromName(fData.weather[0].main, context))
+                        )
+                    }
                 }
             }
         }
@@ -203,6 +203,15 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
             null,
             null,
             false,
+            message
+        )
+
+    private fun errorForecastResponseWithMessage(message: String): ForecastResponse =
+        ForecastResponse(
+            null,
+            0,
+            -1,
+            null,
             message
         )
 }

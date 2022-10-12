@@ -3,10 +3,8 @@ package pl.mattiahit.androidweatherk.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.every
 import io.mockk.mockk
-import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.observers.TestObserver
-import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.junit.Before
 import org.junit.Rule
@@ -29,23 +27,22 @@ class HomeViewModelTest {
         weatherRepository,
         SchedulerProvider(Schedulers.trampoline(), Schedulers.trampoline()))
 
-    private lateinit var testObserver: TestObserver<WeatherResponse>
+    private lateinit var testWeatherObserver: TestObserver<WeatherResponse>
+    private lateinit var testForecastObserver: TestObserver<ForecastResponse>
 
     @Before
     fun setup() {
-        RxAndroidPlugins.reset()
-        RxJavaPlugins.reset()
-        this.testObserver = TestObserver()
-
+        this.testWeatherObserver = TestObserver()
+        this.testForecastObserver = TestObserver()
     }
 
     @Test
     fun getWeatherForCityTest_emptyCityName_responseWithMessage() {
-        this.SUT.getWeatherForCity("", this.testObserver)
-        this.testObserver.assertComplete().assertValue {
+        this.SUT.getWeatherForCity("", this.testWeatherObserver)
+        this.testWeatherObserver.assertComplete().assertValue {
             it.cod == -1
         }
-        this.testObserver.assertComplete().assertValue {
+        this.testWeatherObserver.assertComplete().assertValue {
             it.message != null && it.message!!.isNotEmpty()
         }
     }
@@ -55,11 +52,11 @@ class HomeViewModelTest {
         every { weatherRepository.getWeatherForCity(any()) } answers {
             Single.just(successWeatherResponse())
         }
-        this.SUT.getWeatherForCity("TestCity", this.testObserver)
-        this.testObserver.assertValue {
-            it.cod == 0
+        this.SUT.getWeatherForCity("TestCity", this.testWeatherObserver)
+        this.testWeatherObserver.assertValue {
+            it.cod == 200
         }
-        this.testObserver.assertValue {
+        this.testWeatherObserver.assertValue {
             it.message != null && it.message!!.isEmpty()
         }
     }
@@ -69,13 +66,24 @@ class HomeViewModelTest {
         every { weatherRepository.getWeatherForCity(any()) } answers {
             Single.just(successWeatherResponse()).delay(20, TimeUnit.SECONDS)
         }
-        this.SUT.getWeatherForCity("TestCity", this.testObserver)
-        this.testObserver.await()
-        this.testObserver.assertValue {
+        this.SUT.getWeatherForCity("TestCity", this.testWeatherObserver)
+        this.testWeatherObserver.await()
+        this.testWeatherObserver.assertValue {
             it.cod == -1
         }
-        this.testObserver.assertValue {
+        this.testWeatherObserver.assertValue {
             it.message.equals("Something went wrong...")
+        }
+    }
+
+    @Test
+    fun getForecastForCityTest_emptyCityName_responseWithMessage() {
+        this.SUT.getForecastForCity("", this.testForecastObserver)
+        this.testForecastObserver.assertComplete().assertValue {
+            it.cod == -1
+        }
+        this.testForecastObserver.assertComplete().assertValue {
+            it.message != null && it.message!!.isNotEmpty()
         }
     }
 
@@ -84,7 +92,7 @@ class HomeViewModelTest {
         WeatherResponse(
             "base",
             Clouds(20),
-            0,
+            200,
             Coord(10.99, 10.00),
             1,
             2,
@@ -97,5 +105,43 @@ class HomeViewModelTest {
             null,
             false,
             ""
+        )
+
+    private fun successForecastResponseWithMessage(message: String): ForecastResponse =
+        ForecastResponse(
+            City(
+                Coord(10.99, 10.99),
+                "PL",
+                1,
+                "Test",
+                100,
+                6,
+                20,
+                0
+            ),
+            0,
+            -1,
+            listOf(
+                ForecastData(
+                    Clouds(20),
+                    200,
+                    "200",
+                    Main(
+                        1.9,
+                        1,
+                        1,
+                        1.9,
+                        1.9,
+                        1.9
+                    ),
+                    2.1,
+                    Rain(1.9),
+                    Sys("Test", 1, 1, 1, 1),
+                    1,
+                    listOf(),
+                    Wind(1, 1.9, 1.9)
+                )
+            ),
+            message
         )
 }
