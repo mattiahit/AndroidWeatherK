@@ -72,7 +72,21 @@ class HomeViewModelTest {
             it.cod == -1
         }
         this.testWeatherObserver.assertValue {
-            it.message.equals("Something went wrong...")
+            it.message!!.isNotEmpty()
+        }
+    }
+
+    @Test
+    fun getWeatherForCityTest_cityNotEmptyErrorCityNotFound_errorResponse() {
+        every { weatherRepository.getWeatherForCity(any()) } answers {
+            Single.just(errorWeatherResponse())
+        }
+        this.SUT.getWeatherForCity("Testy", this.testWeatherObserver)
+        this.testWeatherObserver.assertValue {
+            it.cod > 0 && it.cod != 200
+        }
+        this.testWeatherObserver.assertValue {
+            it.message!!.isNotEmpty()
         }
     }
 
@@ -87,7 +101,69 @@ class HomeViewModelTest {
         }
     }
 
+    @Test
+    fun getForecastForCityTest_notEmptyCityName_successResponseForecastData() {
+        every { weatherRepository.getForecastForCity(any()) } answers {
+            Single.just(successForecastResponse())
+        }
+        this.SUT.getForecastForCity("Test", this.testForecastObserver)
+        this.testForecastObserver.assertValue {
+            it.cod == 200
+        }
+        this.testForecastObserver.assertValue {
+            it.message != null && it.message!!.isEmpty()
+        }
+    }
+
+    @Test
+    fun getForecastForCityTest_timeout_timeoutResponse() {
+        every { weatherRepository.getForecastForCity(any()) } answers {
+            Single.just(successForecastResponse()).delay(20, TimeUnit.SECONDS)
+        }
+        this.SUT.getForecastForCity("Test", this.testForecastObserver)
+        this.testForecastObserver.await()
+        this.testForecastObserver.assertValue {
+            it.cod == -1
+        }
+        this.testForecastObserver.assertValue {
+            it.message!!.isNotEmpty()
+        }
+    }
+
+    @Test
+    fun getForecastForCityTest_cityNotEmptyErrorCityNotFound_errorResponse() {
+        every { weatherRepository.getForecastForCity(any()) } answers {
+            Single.just(errorForecastResponse())
+        }
+        this.SUT.getForecastForCity("Testy", this.testForecastObserver)
+        this.testForecastObserver.assertValue {
+            it.cod > 0 && it.cod != 200
+        }
+        this.testForecastObserver.assertValue {
+            it.message!!.isNotEmpty()
+        }
+    }
+
     // ---- Helpers ----
+    private fun errorWeatherResponse(): WeatherResponse =
+        WeatherResponse(
+            null,
+            null,
+            404,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            "city not found"
+        )
+
     private fun successWeatherResponse(): WeatherResponse =
         WeatherResponse(
             "base",
@@ -107,7 +183,16 @@ class HomeViewModelTest {
             ""
         )
 
-    private fun successForecastResponseWithMessage(message: String): ForecastResponse =
+    private fun errorForecastResponse(): ForecastResponse =
+        ForecastResponse(
+            null,
+            null,
+            404,
+            null,
+            "city not found"
+        )
+
+    private fun successForecastResponse(): ForecastResponse =
         ForecastResponse(
             City(
                 Coord(10.99, 10.99),
@@ -120,7 +205,7 @@ class HomeViewModelTest {
                 0
             ),
             0,
-            -1,
+            200,
             listOf(
                 ForecastData(
                     Clouds(20),
@@ -142,6 +227,6 @@ class HomeViewModelTest {
                     Wind(1, 1.9, 1.9)
                 )
             ),
-            message
+            ""
         )
 }

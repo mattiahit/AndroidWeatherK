@@ -3,14 +3,11 @@ package pl.mattiahit.androidweatherk.viewmodels
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
@@ -21,7 +18,6 @@ import pl.mattiahit.androidweatherk.models.ForecastDataLocal
 import pl.mattiahit.androidweatherk.models.WeatherLocation
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
 import pl.mattiahit.androidweatherk.repositories.WeatherRepository
-import pl.mattiahit.androidweatherk.rest.model.City
 import pl.mattiahit.androidweatherk.rest.model.ForecastData
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
