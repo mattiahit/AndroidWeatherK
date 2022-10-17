@@ -88,7 +88,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun resetSearchArea() {
         searchMode = false
-        mHomeViewModel.getLocationsFromDb()
+        //mHomeViewModel.getLocationsFromDb()
         locationNameEditText.text.clear()
         searchLocationBtn.setImageResource(android.R.drawable.ic_menu_search)
     }

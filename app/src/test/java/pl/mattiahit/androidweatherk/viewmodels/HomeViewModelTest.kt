@@ -1,19 +1,23 @@
 package pl.mattiahit.androidweatherk.viewmodels
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.every
 import io.mockk.mockk
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.observers.TestObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import pl.mattiahit.androidweatherk.models.ForecastDataLocal
 import pl.mattiahit.androidweatherk.repositories.LocationRepository
 import pl.mattiahit.androidweatherk.repositories.WeatherRepository
 import pl.mattiahit.androidweatherk.rest.model.*
 import pl.mattiahit.androidweatherk.utils.SchedulerProvider
+import pl.mattiahit.androidweatherk.utils.TimeProvider
 import java.util.concurrent.TimeUnit
 
 class HomeViewModelTest {
@@ -22,10 +26,13 @@ class HomeViewModelTest {
 
     private var locationRepository = mockk<LocationRepository>()
     private var weatherRepository = mockk<WeatherRepository>()
+    private var timeProvider = mockk<TimeProvider>()
+    private var context = mockk<Context>()
 
     private var SUT: HomeViewModel = HomeViewModel(locationRepository,
         weatherRepository,
-        SchedulerProvider(Schedulers.trampoline(), Schedulers.trampoline()))
+        SchedulerProvider(Schedulers.trampoline(), Schedulers.trampoline()),
+        timeProvider)
 
     private lateinit var testWeatherObserver: TestObserver<WeatherResponse>
     private lateinit var testForecastObserver: TestObserver<ForecastResponse>
@@ -34,6 +41,9 @@ class HomeViewModelTest {
     fun setup() {
         this.testWeatherObserver = TestObserver()
         this.testForecastObserver = TestObserver()
+        every { timeProvider.getApiResponseTimeoutSeconds() } answers {
+            2
+        }
     }
 
     @Test
@@ -64,7 +74,7 @@ class HomeViewModelTest {
     @Test
     fun getWeatherForCityTest_timeout_timeoutResponse() {
         every { weatherRepository.getWeatherForCity(any()) } answers {
-            Single.just(successWeatherResponse()).delay(20, TimeUnit.SECONDS)
+            Single.just(successWeatherResponse()).delay(3, TimeUnit.SECONDS)
         }
         this.SUT.getWeatherForCity("TestCity", this.testWeatherObserver)
         this.testWeatherObserver.await()
@@ -118,7 +128,7 @@ class HomeViewModelTest {
     @Test
     fun getForecastForCityTest_timeout_timeoutResponse() {
         every { weatherRepository.getForecastForCity(any()) } answers {
-            Single.just(successForecastResponse()).delay(20, TimeUnit.SECONDS)
+            Single.just(successForecastResponse()).delay(3, TimeUnit.SECONDS)
         }
         this.SUT.getForecastForCity("Test", this.testForecastObserver)
         this.testForecastObserver.await()
@@ -142,6 +152,18 @@ class HomeViewModelTest {
         this.testForecastObserver.assertValue {
             it.message!!.isNotEmpty()
         }
+    }
+
+    @Test
+    fun getForecastDataLocalFromForecastResponseTest_errorForecastResponse_emptyList() {
+        val result = this.SUT.getForecastDataLocalFromForecastResponse(errorForecastResponse(), context)
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun getForecastDataLocalFromForecastResponseTest_successForecastResponse_notEmptyList() {
+        val result = this.SUT.getForecastDataLocalFromForecastResponse(successForecastResponse(), context)
+        Assert.assertTrue(result.isNotEmpty())
     }
 
     // ---- Helpers ----

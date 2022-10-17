@@ -6,6 +6,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import pl.mattiahit.androidweatherk.rest.APIService
 import pl.mattiahit.androidweatherk.utils.SchedulerProvider
+import pl.mattiahit.androidweatherk.utils.TimeProvider
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -21,4 +22,8 @@ class ApiModule {
     @Singleton
     @Provides
     fun provideSchedulerProvider() = SchedulerProvider(Schedulers.io(), AndroidSchedulers.mainThread())
+
+    @Singleton
+    @Provides
+    fun provideTimeProvider() = TimeProvider()
 }
