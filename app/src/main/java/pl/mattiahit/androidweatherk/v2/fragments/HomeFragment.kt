@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import io.reactivex.rxjava3.core.SingleObserver
@@ -14,13 +15,15 @@ import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
 import pl.mattiahit.androidweatherk.models.ForecastDataLocal
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
+import pl.mattiahit.androidweatherk.utils.PermissionHelper
+import pl.mattiahit.androidweatherk.utils.PermissionListener
 import pl.mattiahit.androidweatherk.utils.Tools
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
 import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
 import pl.mattiahit.androidweatherk.widgets.ForecastDataView
 import javax.inject.Inject
 
-class HomeFragment : Fragment(R.layout.fragment_home_v2) {
+class HomeFragment : Fragment(R.layout.fragment_home_v2), PermissionListener {
 
     @Inject
     lateinit var mHomeViewModelFactory: HomeViewModelFactory
@@ -28,6 +31,7 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
     private lateinit var mHomeViewModel: HomeViewModel
     private lateinit var mWeatherDisposable: Disposable
     private lateinit var mForecastDisposable: Disposable
+    private val permissionHelper = PermissionHelper(this, this)
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,6 +44,10 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
             this.mHomeViewModelFactory
         )[HomeViewModel::class.java]
 
+        permissionHelper.checkForRequiredPermissions()
+    }
+
+    private fun startCheckingWeather() {
         mHomeViewModel.getCurrentLocation().observe(viewLifecycleOwner) {
             binding.pbMainWidget.visibility = View.GONE
             binding.tvCityName.text = it.locationName
@@ -94,4 +102,11 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2) {
         this.mWeatherDisposable.dispose()
         this.mForecastDisposable.dispose()
     }
+
+    override fun isPermissionGranted(isGranted: Boolean) {
+        if(isGranted) {
+            startCheckingWeather()
+        }
+    }
+
 }
