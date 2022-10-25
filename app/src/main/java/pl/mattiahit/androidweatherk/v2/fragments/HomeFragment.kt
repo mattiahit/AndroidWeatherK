@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import io.reactivex.rxjava3.core.SingleObserver
@@ -13,7 +12,6 @@ import pl.mattiahit.androidweatherk.MainActivity
 import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
-import pl.mattiahit.androidweatherk.models.ForecastDataLocal
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
 import pl.mattiahit.androidweatherk.utils.PermissionHelper
@@ -21,7 +19,7 @@ import pl.mattiahit.androidweatherk.utils.PermissionListener
 import pl.mattiahit.androidweatherk.utils.Tools
 import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
 import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
-import pl.mattiahit.androidweatherk.widgets.ForecastDataView
+import pl.mattiahit.androidweatherk.widgets.ForecastAdapter
 import javax.inject.Inject
 
 class HomeFragment : Fragment(R.layout.fragment_home_v2), PermissionListener {
@@ -94,15 +92,8 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2), PermissionListener {
                             (activity as MainActivity).showNegativeMessage(errorMessage)
                         }
                     } else {
-                        binding.forecastDataLayout.removeAllViews()
                         val dataList = mHomeViewModel.getForecastDataLocalFromForecastResponse(t, requireContext())
-                        for(fdLocal: ForecastDataLocal in dataList) {
-                            binding.forecastDataLayout.addView(
-                                ForecastDataView(
-                                    requireContext(),
-                                    fdLocal)
-                            )
-                        }
+                        binding.rvWeatherDaysList.adapter = ForecastAdapter(dataList)
                     }
                 }
 
