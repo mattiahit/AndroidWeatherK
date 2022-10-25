@@ -15,4 +15,7 @@
     <string name="location_deleted">Location deleted!</string>
     <string name="location_name">Location name</string>
     <string name="locate_me">Locate me</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="permissions_required">Permissions Required</string>
+    <string name="ok">OK</string>
 </resources>

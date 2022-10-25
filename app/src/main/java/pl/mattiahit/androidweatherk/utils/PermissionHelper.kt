@@ -30,6 +30,7 @@ class PermissionHelper(private val fragment: Fragment, private val permissionLis
                 if(ContextCompat.checkSelfPermission(it, permission) == PackageManager.PERMISSION_GRANTED) {
                     permissionListener.isPermissionGranted(true)
                 } else {
+                    permissionListener.isPermissionGranted(false)
                     requestPermissionsLauncher.launch(requiredPermissions.toTypedArray())
                 }
             }

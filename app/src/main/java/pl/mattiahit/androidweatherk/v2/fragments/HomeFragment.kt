@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
+import pl.mattiahit.androidweatherk.MainActivity
 import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
@@ -57,19 +58,29 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2), PermissionListener {
                     mWeatherDisposable = d
                 }
 
+                @SuppressLint("StringFormatInvalid")
                 override fun onSuccess(it: WeatherResponse) {
-                    binding.tvMainTemperature.text = requireContext().resources.getString(R.string.degree_scale, if(it.main != null) (it.main.temp - 273).toInt() else -1)
-                    binding.tvMainWind.text = requireContext().resources.getString(R.string.wind_speed_scale, if(it.wind != null) it.wind.speed.toInt() else -1)
-                    binding.tvMainPressure.text = requireContext().resources.getString(R.string.pressure_scale, if(it.main != null) it.main.pressure else -1)
-                    binding.tvMainClouds.text = requireContext().resources.getString(R.string.clouds_scale, if(it.clouds != null) it.clouds.all else -1)
-                    binding.tvDataTime.text = Tools.getCurrentTime()
-                    if(it.weather != null) {
-                        binding.ivTodayWeatherIco.setImageDrawable(mHomeViewModel.getDrawableFromName( it.weather[0].main, requireContext()))
+                    if(it.cod != 200) {
+                        it.message?.let { errorMessage ->
+                            (activity as MainActivity).showNegativeMessage(errorMessage)
+                        }
+                    } else {
+                        binding.tvMainTemperature.text = requireContext().resources.getString(R.string.degree_scale, if(it.main != null) (it.main.temp - 273).toInt() else -1)
+                        binding.tvMainWind.text = requireContext().resources.getString(R.string.wind_speed_scale, if(it.wind != null) it.wind.speed.toInt() else -1)
+                        binding.tvMainPressure.text = requireContext().resources.getString(R.string.pressure_scale, if(it.main != null) it.main.pressure else -1)
+                        binding.tvMainClouds.text = requireContext().resources.getString(R.string.clouds_scale, if(it.clouds != null) it.clouds.all else -1)
+                        binding.tvDataTime.text = Tools.getCurrentTime()
+                        if(it.weather != null) {
+                            binding.ivTodayWeatherIco.setImageDrawable(mHomeViewModel.getDrawableFromName( it.weather[0].main, requireContext()))
+                        }
                     }
                 }
 
                 override fun onError(e: Throwable) {
-                    e.message?.let { Log.e("ERROR", e.message!!) }
+                    e.message?.let { errorMessage ->
+                        Log.e("ERROR", errorMessage)
+                        (activity as MainActivity).showNegativeMessage(errorMessage)
+                    }
                 }
             })
             mHomeViewModel.getForecastForCity(it.locationName, object : SingleObserver<ForecastResponse>{
@@ -78,19 +89,28 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2), PermissionListener {
                 }
 
                 override fun onSuccess(t: ForecastResponse) {
-                    binding.forecastDataLayout.removeAllViews()
-                    val dataList = mHomeViewModel.getForecastDataLocalFromForecastResponse(t, requireContext())
-                    for(fdLocal: ForecastDataLocal in dataList) {
-                        binding.forecastDataLayout.addView(
-                            ForecastDataView(
-                                requireContext(),
-                                fdLocal)
-                        )
+                    if(t.cod != 200) {
+                        t.message?.let { errorMessage ->
+                            (activity as MainActivity).showNegativeMessage(errorMessage)
+                        }
+                    } else {
+                        binding.forecastDataLayout.removeAllViews()
+                        val dataList = mHomeViewModel.getForecastDataLocalFromForecastResponse(t, requireContext())
+                        for(fdLocal: ForecastDataLocal in dataList) {
+                            binding.forecastDataLayout.addView(
+                                ForecastDataView(
+                                    requireContext(),
+                                    fdLocal)
+                            )
+                        }
                     }
                 }
 
                 override fun onError(e: Throwable) {
-                    e.message?.let { Log.e("ERROR", e.message!!) }
+                    e.message?.let { errorMessage ->
+                        Log.e("ERROR", errorMessage)
+                        (activity as MainActivity).showNegativeMessage(errorMessage)
+                    }
                 }
 
             })
@@ -105,7 +125,10 @@ class HomeFragment : Fragment(R.layout.fragment_home_v2), PermissionListener {
 
     override fun isPermissionGranted(isGranted: Boolean) {
         if(isGranted) {
+            (activity as MainActivity).showPositiveMessage(getString(R.string.ok))
             startCheckingWeather()
+        } else {
+            (activity as MainActivity).showNegativeMessage(getString(R.string.permissions_required))
         }
     }
 
