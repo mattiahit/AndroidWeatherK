@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/homeFragment2"
-        android:name="pl.mattiahit.androidweatherk.v2.fragments.HomeFragment"
+        android:name="pl.mattiahit.androidweatherk.home.ui.HomeFragment"
         android:label="HomeFragment" />
 </navigation>

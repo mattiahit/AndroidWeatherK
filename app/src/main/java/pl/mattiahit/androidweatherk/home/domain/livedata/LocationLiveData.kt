@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.livedata
+package pl.mattiahit.androidweatherk.home.domain.livedata
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -12,7 +12,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import pl.mattiahit.androidweatherk.models.WeatherLocation
+import pl.mattiahit.androidweatherk.database.entities.WeatherLocation
 import pl.mattiahit.androidweatherk.utils.Tools
 import java.util.*
 
@@ -68,7 +68,7 @@ class LocationLiveData(private val context: Context) : LiveData<WeatherLocation>
         const val ONE_MINUTE: Long = 60000
         val locationRequest : LocationRequest = LocationRequest.create().apply {
             interval = ONE_MINUTE
-            fastestInterval = ONE_MINUTE/4
+            fastestInterval = ONE_MINUTE /4
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }

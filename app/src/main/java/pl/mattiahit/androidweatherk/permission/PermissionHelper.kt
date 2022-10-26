@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.utils
+package pl.mattiahit.androidweatherk.permission
 
 import android.Manifest
 import android.content.pm.PackageManager

@@ -9,7 +9,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import pl.mattiahit.androidweatherk.database.AppDatabase
-import pl.mattiahit.androidweatherk.models.WeatherLocation
+import pl.mattiahit.androidweatherk.database.daos.WeatherLocationDao
+import pl.mattiahit.androidweatherk.database.entities.WeatherLocation
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest

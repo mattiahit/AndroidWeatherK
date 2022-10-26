@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.viewmodels
+package pl.mattiahit.androidweatherk.home.ui.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,10 +9,10 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import pl.mattiahit.androidweatherk.R
 import pl.mattiahit.androidweatherk.enums.DayTime
-import pl.mattiahit.androidweatherk.models.ForecastDataLocal
-import pl.mattiahit.androidweatherk.models.WeatherLocation
-import pl.mattiahit.androidweatherk.repositories.LocationRepository
-import pl.mattiahit.androidweatherk.repositories.WeatherRepository
+import pl.mattiahit.androidweatherk.home.domain.model.ForecastDataLocal
+import pl.mattiahit.androidweatherk.database.entities.WeatherLocation
+import pl.mattiahit.androidweatherk.home.domain.repository.LocationRepository
+import pl.mattiahit.androidweatherk.home.domain.repository.WeatherRepository
 import pl.mattiahit.androidweatherk.rest.model.ForecastData
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
@@ -77,7 +77,8 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
                     val tempData = Tools.getDayAndMonthFromTimestamp(fData.dt)
                     if(date !== tempData){
                         date = tempData
-                        result.add(ForecastDataLocal(
+                        result.add(
+                            ForecastDataLocal(
                             date,
                             context.resources.getString(R.string.degree_scale, (fData.main.temp - 273).toInt()),
                             getDrawableFromName(fData.weather[0].main, context))

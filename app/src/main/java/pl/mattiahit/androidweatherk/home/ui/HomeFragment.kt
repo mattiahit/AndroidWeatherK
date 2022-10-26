@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.v2.fragments
+package pl.mattiahit.androidweatherk.home.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -14,12 +14,11 @@ import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.databinding.FragmentHomeV2Binding
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
-import pl.mattiahit.androidweatherk.utils.PermissionHelper
-import pl.mattiahit.androidweatherk.utils.PermissionListener
+import pl.mattiahit.androidweatherk.permission.PermissionHelper
+import pl.mattiahit.androidweatherk.permission.PermissionListener
 import pl.mattiahit.androidweatherk.utils.Tools
-import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
-import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
-import pl.mattiahit.androidweatherk.widgets.ForecastAdapter
+import pl.mattiahit.androidweatherk.home.ui.viewmodel.HomeViewModel
+import pl.mattiahit.androidweatherk.home.ui.viewmodel.factories.HomeViewModelFactory
 import javax.inject.Inject
 
 class HomeFragment : Fragment(R.layout.fragment_home_v2), PermissionListener {

@@ -1,8 +1,8 @@
-package pl.mattiahit.androidweatherk.viewmodels.factories
+package pl.mattiahit.androidweatherk.home.ui.viewmodel.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import pl.mattiahit.androidweatherk.viewmodels.HomeViewModel
+import pl.mattiahit.androidweatherk.home.ui.viewmodel.HomeViewModel
 import javax.inject.Inject
 import javax.inject.Provider
 

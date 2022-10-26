@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.widgets
+package pl.mattiahit.androidweatherk.home.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import pl.mattiahit.androidweatherk.R
-import pl.mattiahit.androidweatherk.models.ForecastDataLocal
+import pl.mattiahit.androidweatherk.home.domain.model.ForecastDataLocal
 
 class ForecastAdapter(private val forecastList: List<ForecastDataLocal>):
     RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {

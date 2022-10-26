@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.models
+package pl.mattiahit.androidweatherk.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

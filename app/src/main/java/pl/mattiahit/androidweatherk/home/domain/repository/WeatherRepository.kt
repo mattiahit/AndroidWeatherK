@@ -1,8 +1,8 @@
-package pl.mattiahit.androidweatherk.repositories
+package pl.mattiahit.androidweatherk.home.domain.repository
 
 import io.reactivex.rxjava3.core.Single
 import pl.mattiahit.androidweatherk.WeatherApplication
-import pl.mattiahit.androidweatherk.models.WeatherLocation
+import pl.mattiahit.androidweatherk.database.entities.WeatherLocation
 import pl.mattiahit.androidweatherk.rest.APIService
 import pl.mattiahit.androidweatherk.rest.BaseRestTask
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
