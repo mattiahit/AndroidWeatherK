@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.home.domain.repository
+package pl.mattiahit.androidweatherk.home.data.repository
 
 import io.reactivex.rxjava3.core.Single
 import pl.mattiahit.androidweatherk.WeatherApplication

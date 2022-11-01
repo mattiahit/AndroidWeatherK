@@ -12,8 +12,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import pl.mattiahit.androidweatherk.home.domain.repository.LocationRepository
-import pl.mattiahit.androidweatherk.home.domain.repository.WeatherRepository
+import pl.mattiahit.androidweatherk.home.data.repository.LocationRepository
+import pl.mattiahit.androidweatherk.home.data.repository.WeatherRepository
 import pl.mattiahit.androidweatherk.home.ui.viewmodel.HomeViewModel
 import pl.mattiahit.androidweatherk.rest.model.*
 import pl.mattiahit.androidweatherk.utils.SchedulerProvider

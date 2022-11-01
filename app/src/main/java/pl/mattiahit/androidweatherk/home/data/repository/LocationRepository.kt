@@ -1,10 +1,10 @@
-package pl.mattiahit.androidweatherk.home.domain.repository
+package pl.mattiahit.androidweatherk.home.data.repository
 
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import pl.mattiahit.androidweatherk.WeatherApplication
 import pl.mattiahit.androidweatherk.database.AppDatabase
-import pl.mattiahit.androidweatherk.home.domain.livedata.LocationLiveData
+import pl.mattiahit.androidweatherk.home.data.livedata.LocationLiveData
 import pl.mattiahit.androidweatherk.database.entities.WeatherLocation
 import javax.inject.Inject
 

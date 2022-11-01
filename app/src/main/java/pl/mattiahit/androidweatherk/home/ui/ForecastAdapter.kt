@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import pl.mattiahit.androidweatherk.R
-import pl.mattiahit.androidweatherk.home.domain.model.ForecastDataLocal
+import pl.mattiahit.androidweatherk.home.data.model.ForecastDataLocal
 
 class ForecastAdapter(private val forecastList: List<ForecastDataLocal>):
     RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {

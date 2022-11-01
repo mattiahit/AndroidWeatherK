@@ -5,14 +5,12 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import pl.mattiahit.androidweatherk.R
-import pl.mattiahit.androidweatherk.enums.DayTime
-import pl.mattiahit.androidweatherk.home.domain.model.ForecastDataLocal
+import pl.mattiahit.androidweatherk.home.data.model.ForecastDataLocal
 import pl.mattiahit.androidweatherk.database.entities.WeatherLocation
-import pl.mattiahit.androidweatherk.home.domain.repository.LocationRepository
-import pl.mattiahit.androidweatherk.home.domain.repository.WeatherRepository
+import pl.mattiahit.androidweatherk.home.data.repository.LocationRepository
+import pl.mattiahit.androidweatherk.home.data.repository.WeatherRepository
 import pl.mattiahit.androidweatherk.rest.model.ForecastData
 import pl.mattiahit.androidweatherk.rest.model.ForecastResponse
 import pl.mattiahit.androidweatherk.rest.model.WeatherResponse
@@ -94,28 +92,16 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
     fun getDrawableFromName(name: String, context: Context): Drawable =
         when(name) {
             "Clouds" -> {
-                if(timeProvider.getDayPhase() == DayTime.NIGHT)
-                    context.resources.getDrawable(R.drawable.cloudy_night, context.theme)
-                else
-                    context.resources.getDrawable(R.drawable.cloudy_day, context.theme)
+                context.resources.getDrawable(R.drawable.cloudy, context.theme)
             }
             "Clear" -> {
-                if(timeProvider.getDayPhase() == DayTime.NIGHT)
-                    context.resources.getDrawable(R.drawable.night, context.theme)
-                else
-                    context.resources.getDrawable(R.drawable.sun, context.theme)
+                context.resources.getDrawable(R.drawable.clear, context.theme)
             }
             "Rain" -> {
-                if(timeProvider.getDayPhase() == DayTime.NIGHT)
-                    context.resources.getDrawable(R.drawable.rainy_night, context.theme)
-                else
-                    context.resources.getDrawable(R.drawable.rainy_day, context.theme)
+                context.resources.getDrawable(R.drawable.rainy, context.theme)
             }
             "Thunderstorm" -> {
-                if(timeProvider.getDayPhase() == DayTime.NIGHT)
-                    context.resources.getDrawable(R.drawable.stormy_night, context.theme)
-                else
-                    context.resources.getDrawable(R.drawable.stormy_day, context.theme)
+                context.resources.getDrawable(R.drawable.stormy, context.theme)
             }
             "Mist" -> {
                 context.resources.getDrawable(R.drawable.foog, context.theme)
@@ -125,11 +111,6 @@ class HomeViewModel @Inject constructor(private val locationRepository: Location
             }
             else -> context.resources.getDrawable(R.drawable.cloud, context.theme)
         }
-
-
-    fun isLocationExistsAsFavourities(name: String): Single<Boolean> {
-        return this.locationRepository.isLocationNameExistsInDb(name)
-    }
 
     private fun errorWeatherResponseWithMessage(message: String): WeatherResponse =
         WeatherResponse(

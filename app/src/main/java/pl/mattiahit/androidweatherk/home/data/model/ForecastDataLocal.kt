@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.home.domain.model
+package pl.mattiahit.androidweatherk.home.data.model
 
 import android.graphics.drawable.Drawable
 

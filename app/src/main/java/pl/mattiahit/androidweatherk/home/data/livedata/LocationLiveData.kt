@@ -1,4 +1,4 @@
-package pl.mattiahit.androidweatherk.home.domain.livedata
+package pl.mattiahit.androidweatherk.home.data.livedata
 
 import android.content.Context
 import android.content.pm.PackageManager

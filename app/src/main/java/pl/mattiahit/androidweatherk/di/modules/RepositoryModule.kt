@@ -3,8 +3,8 @@ package pl.mattiahit.androidweatherk.di.modules
 import dagger.Module
 import dagger.Provides
 import pl.mattiahit.androidweatherk.WeatherApplication
-import pl.mattiahit.androidweatherk.home.domain.repository.LocationRepository
-import pl.mattiahit.androidweatherk.home.domain.repository.WeatherRepository
+import pl.mattiahit.androidweatherk.home.data.repository.LocationRepository
+import pl.mattiahit.androidweatherk.home.data.repository.WeatherRepository
 import javax.inject.Singleton
 
 @Module
