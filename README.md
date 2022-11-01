@@ -2,9 +2,8 @@
 Odnowiona aplikacja wyswietlająca prognoze pogody dla danej lokalizacji.
 
 ###### Najwazniejsze funkcje aplikacji:
-* pobieranie danych pogodowych dot. żądanej lokalizacji
-* możliwość automatycznego wykrycia lokalizacji
-* ulubione lokalizacje
+* pobieranie danych pogodowych dot. lokalizacji
+* automatyczne wykrycie lokalizacji
 
 ###### Użyta technologia:
 * KOTLIN
@@ -13,4 +12,4 @@ Odnowiona aplikacja wyswietlająca prognoze pogody dla danej lokalizacji.
 * Retrofit 2
 * Room
 * Dagger2
-* RxJava\RxKotlin\RxAndroid
+* RxKotlin
