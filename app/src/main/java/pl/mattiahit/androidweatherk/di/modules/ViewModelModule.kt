@@ -3,9 +3,7 @@ package pl.mattiahit.androidweatherk.di.modules
 import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import pl.mattiahit.androidweatherk.viewmodels.factories.HomeViewModelFactory
-import javax.inject.Singleton
+import pl.mattiahit.androidweatherk.home.ui.viewmodel.factories.HomeViewModelFactory
 
 @Module
 abstract class ViewModelModule {

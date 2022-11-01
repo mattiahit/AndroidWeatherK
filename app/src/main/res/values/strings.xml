@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidWeatherK</string>
+    <string name="app_name">Android Weather K</string>
     <string name="weather_ico_desc">WeatherIco</string>
     <string name="city_ico_desc">CityIco</string>
     <string name="temperature_ico_desc">TemperatureIco</string>
@@ -7,7 +7,7 @@
     <string name="clouds_ico_desc">CloudsIco</string>
     <string name="pressure_ico_desc">PressureIco</string>
     <string name="favourite_ico_desc">FavouriteIco</string>
-    <string name="degree_scale">%d °C</string>
+    <string name="degree_scale">%d°C</string>
     <string name="wind_speed_scale">%d m/s</string>
     <string name="clouds_scale">%d \%%</string>
     <string name="pressure_scale">%d hPa</string>
@@ -15,4 +15,7 @@
     <string name="location_deleted">Location deleted!</string>
     <string name="location_name">Location name</string>
     <string name="locate_me">Locate me</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="permissions_required">Permissions Required</string>
+    <string name="ok">OK</string>
 </resources>

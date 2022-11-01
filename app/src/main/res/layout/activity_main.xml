@@ -12,6 +12,21 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:id="@+id/nav_host_fragment_container"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph"/>
+        app:navGraph="@navigation/nav_graph"
+        tools:layout="@layout/fragment_home_v2" />
+
+    <TextView
+        android:id="@+id/tv_app_message"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        tools:text="Everything is OK"
+        android:background="@color/colorPositiveDark"
+        app:layout_constraintBottom_toBottomOf="@+id/nav_host_fragment_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
