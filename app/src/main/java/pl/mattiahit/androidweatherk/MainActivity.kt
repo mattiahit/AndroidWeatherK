@@ -5,6 +5,7 @@ import android.os.Message
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import pl.mattiahit.androidweatherk.databinding.ActivityMainBinding
 
 
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         (application as WeatherApplication).getAppComponent().inject(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        installSplashScreen()
         setContentView(binding.root)
     }
 

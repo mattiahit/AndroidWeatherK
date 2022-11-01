@@ -16,8 +16,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AndroidWeatherK"
-        tools:targetApi="n">
+        android:theme="@style/Theme.App.Starting">
         <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

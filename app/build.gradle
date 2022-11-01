@@ -74,6 +74,7 @@ dependencies {
     implementation "androidx.room:room-rxjava3:$room_version"
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'org.mockito:mockito-core:3.11.2'
+    implementation 'androidx.core:core-splashscreen:1.0.0'
     androidTestImplementation 'org.mockito:mockito-android:2.24.5'
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     testImplementation "androidx.room:room-testing:$room_version"
