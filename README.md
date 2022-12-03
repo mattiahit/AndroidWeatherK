@@ -1,15 +1,21 @@
-# AndroidWeather
-Odnowiona aplikacja wyswietlająca prognoze pogody dla danej lokalizacji.
+# AndroidWeatherK
+App to display weather for current location
 
-###### Najwazniejsze funkcje aplikacji:
-* pobieranie danych pogodowych dot. lokalizacji
-* automatyczne wykrycie lokalizacji
+###### Main features:
+* detecting location via GPS
+* showing weather for location
+* 5 day forecast for location
+* light/dark mode
 
-###### Użyta technologia:
-* KOTLIN
+###### Used technology:
+* MVVM Architecture
+* Kotlin
 * Android SDK
-* MVVM
+* RXKotlin
 * Retrofit 2
-* Room
-* Dagger2
-* RxKotlin
+* Dagger 2
+* MOCKK Tests
+
+## Screenshots
+<img src="/screenshots/WeatherK001.png" /> 
+<img src="/screenshots/WeatherK002.png" /> 
